@@ -120,15 +120,17 @@ class Api {
         return $fields;
     }
 
-    private function callCurl($fields)
+    public function getWsdl()
     {
-        $fields = array_merge($this->top, $fields, $this->bot);
-        $fields = $this->trimString($fields);
+        $uri = 'https://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
+        return $this->callCurl('',$uri);
+    }
 
-        $postFields = implode("\r\n", $fields);
+    private function callCurl($fields, $uri='https://apps8.tflite.com/PublicService/Ota.svc')
+    {
 
         $options = [
-            CURLOPT_URL => 'https://apps8.tflite.com/PublicService/Ota.svc',
+            CURLOPT_URL => $uri,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -137,13 +139,20 @@ class Api {
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>$postFields,
             CURLOPT_HTTPHEADER => [ 'Content-Type: application/soap+xml' ],
         ];
 
         $curl = curl_init();
         curl_setopt_array($curl, $options);
+        if(!empty($fields)) {
+            $fields = array_merge($this->top, $fields, $this->bot);
+            $fields = $this->trimString($fields);
+            $postFields = implode("\r\n", $fields);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+        } else {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+        }
         $response = curl_exec($curl);
         curl_close($curl);
 
