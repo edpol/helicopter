@@ -25,9 +25,19 @@ try{
 $wsdl = $api->getWsdl();
 //echo $wsdl;
 
-//    $client = new SoapClient($file);
+    $opts2 = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
+    $context2 = stream_context_create($opts2);
+    $soapClientOptions2 = [ 'stream_context' => $context2, 'cache' => WSDL_CACHE_NONE ];
+
+    $opts = [ 'http' => [ 'user_agent' => 'PHPSoapClient' ], 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
+    $context = stream_context_create($opts);
+    $soapClientOptions = [ 'stream_context' => $context, 'cache' => WSDL_CACHE_NONE ];
+
+    $options = [ 'trace' => 1, 'verify_peer' => false, 'verify_peer_name' => false ];
+    $options2 = [ 'cache_wsdl' => 0 ];
+
     $uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
-    $client = new SoapClient($uri, ['trace' => 1, 'verify_peer' => false, 'verify_peer_name' => false ] );
+    $client = new SoapClient( $uri, $soapClientOptions2 );
 
     echo 'get_class_methods: ';
     $class_methods = get_class_methods($client);

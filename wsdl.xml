@@ -14,8 +14,7 @@
                   xmlns:tns="tflite.com/TakeFliteExternalService/"
                   xmlns:wsa10="http://www.w3.org/2005/08/addressing"
                   xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
-                  xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
->
+                  xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
     <wsp:Policy wsu:Id="WSHttpBinding_TakeFliteOtaService_policy">
         <wsp:ExactlyOne>
             <wsp:All>
