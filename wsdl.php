@@ -29,21 +29,6 @@ $wsdl = $api->getWsdl();
     $uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
     $client = new SoapClient($uri, ['trace' => 1, 'verify_peer' => false, 'verify_peer_name' => false ] );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     echo 'get_class_methods: ';
     $class_methods = get_class_methods($client);
     print_r($class_methods);
