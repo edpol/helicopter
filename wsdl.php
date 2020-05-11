@@ -3,11 +3,7 @@
 <head>
     <title>WSDL File</title>
     <style>
-        body {
-            background-color:black;
-            color:white;
-            font-family: Arial, serif;
-        }
+        body {background-color:black; color:white; font-family: Arial, serif;}
     </style>
 </head>
 <body>
@@ -22,8 +18,8 @@ ini_set('soap.wsdl_cache_enabled', '0');
 try{
 
     echo '<pre>';
-$wsdl = $api->getWsdl();
-//echo $wsdl;
+    $wsdl = $api->getWsdl();
+//  echo $wsdl;
 
     $opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
     $context = stream_context_create($opts);
@@ -39,6 +35,10 @@ $wsdl = $api->getWsdl();
     echo '__getFunctions: ';
     $classFunctions = $client->__getFunctions();
     print_r($classFunctions);
+
+    $parameters = [$AgentLogin, $AgentPassword, $ServiceId];
+    $fareSearch = $client->OTA_AirLowFareSearchRQ(["OTA_AirLowFareSearchRQ", $parameters]);
+    print_r($fareSearch);
 
 } catch (Exception $e) {
     print_r($e);

@@ -1,5 +1,9 @@
+<!--
+this is the wsdl file from tflite
+-->
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions name="ExternalService" targetNamespace="tflite.com/TakeFliteExternalService/"
+<wsdl:definitions name="ExternalService"
+                  targetNamespace="tflite.com/TakeFliteExternalService/"
                   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
                   xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex"
@@ -49,8 +53,12 @@
                         namespace="http://www.opentravel.org/OTA/2003/05"/>
         </xsd:schema>
     </wsdl:types>
+<!--    so it looks like, this is where the definitions of the DATA TYPES of input parameters for the functions, and the response
+        But this turkey is so big that they have them in a different CALL!!!!
+ -->
     <wsdl:message name="TakeFliteOtaService_OTA_AirLowFareSearchRQ_InputMessage">
         <wsdl:part name="parameters" element="tns:OTA_AirLowFareSearchRQ"/>
+<!--   so elements is the input type     -->
     </wsdl:message>
     <wsdl:message name="TakeFliteOtaService_OTA_AirLowFareSearchRQ_OutputMessage">
         <wsdl:part name="parameters" element="tns:OTA_AirLowFareSearchRQResponse"/>
@@ -107,6 +115,8 @@
         <wsdl:operation name="OTA_AirLowFareSearchRQ">
             <wsdl:input wsaw:Action="tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQ"
                         message="tns:TakeFliteOtaService_OTA_AirLowFareSearchRQ_InputMessage"/>
+<!--    message attribute in the <input> is the name of the message that describes the input or output of the function
+        so look for it in the <message> tag  -->
             <wsdl:output
                     wsaw:Action="tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQResponse"
                     message="tns:TakeFliteOtaService_OTA_AirLowFareSearchRQ_OutputMessage"/>
@@ -170,6 +180,8 @@
                     style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
+<!-- if "use" is literal the <part> tag will use the attribute element
+     if "use" is encoded                                       type  -->
             </wsdl:input>
             <wsdl:output>
                 <soap12:body use="literal"/>
