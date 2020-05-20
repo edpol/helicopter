@@ -15,7 +15,6 @@ class Consume
         foreach($namespaces as $key => $value){
             $namespace_list[] = $key;
         }
-
         $this->listMethods($namespaces, 'Namespaces');
 
         if(count($namespace_list)===0) {
@@ -30,21 +29,21 @@ class Consume
         $type = gettype($target);
         switch($type){
             case 'array':
-                echo '<table>';
-                echo "<caption>{$name}</caption>";
+                echo "\r\n<table>\r\n";
+                echo "<caption><u>{$name}</u></caption>\r\n";
                 foreach($target as $key => $value){
                     echo "<tr><td>{$key}</td><td>{$value}</td></tr>\r\n";
                 }
-                echo "</table><br />\r\n";
+                echo "</table>\r\n<br />\r\n";
                 break;
             case 'object':
                 $class_methods = get_class_methods($target);
-                echo '<table>';
-                echo '<caption>get_class_methods for class ' . get_class($target) . '</caption>';
+                echo "\r\n<table>\r\n";
+                echo '<caption>get_class_methods for class ' . get_class($target) . "</caption>\r\n";
                 foreach($class_methods as $key => $value){
                     echo "<tr><td>{$key}</td><td>{$value}</td></tr>\r\n";
                 }
-                echo "</table><br />\r\n";
+                echo "</table>\r\n<br />\r\n";
                 break;
         }
     }
@@ -86,22 +85,23 @@ class Consume
             ->TravelChoices
             ->TravelItem;
 
-        echo gettype($child) . '<br />';
+        echo "Type Returned: <u>" . gettype($child) . '</u><br />';
 
         foreach ($child as $travelItem) {
     //    $DepartureAirport = $travelItem->TravelDetail->OutwardTravel->AirSegment->DepartureAirport->attributes();
     //    $ArrivalAirport   = $travelItem->TravelDetail->OutwardTravel->AirSegment->ArrivalAirport->attributes();
             $AirSegment = $travelItem->TravelDetail->OutwardTravel->AirSegment;
             foreach ($AirSegment->attributes() as $key => $value) {
-                echo "{$key}: $value <br />";
+                echo "<p>{$key}: $value <br />\r\n";
                 foreach ($AirSegment->children() as $key1 => $value1) {
                     echo '     ' . $key1 . ': ';
                     $child = $travelItem->TravelDetail->OutwardTravel->AirSegment->{$key1};
                     foreach ($child->attributes() as $key2 => $value2) {
                         echo " $key2 = $value2 ";
                     }
-                    echo '<br />';
+                    echo "<br />\r\n";
                 }
+                echo "</p>\r\n";
             }
         }
     }

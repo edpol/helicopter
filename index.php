@@ -18,7 +18,7 @@ $results =  $api->allPackages();
 
 $results = str_replace('<', "\r\n<", $results);
 
-echo date('Y-m-d h:m:s') . "<br />\r\n";
+echo "<p>" . date('Y-m-d h:m:s') . "</p>\r\n";
 
 $consume->read($results);
 
