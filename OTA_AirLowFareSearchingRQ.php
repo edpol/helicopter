@@ -3,38 +3,30 @@
  * Naming the classes the same as the functions
  */
 
+// these are the allowed values for the given variable
+class anonymous {
+    public static $anonymous12 = ["Test", "Production"];
+    public static $anonymous3 = ["Normal", "Window", "ArrivalTime", "PowerFlight", "AvailableOnly", "WaitlistOnly", "AvailableAndWaitlist", "FreighterFlights", "Reward"];
+    public static $anonymous2 = ["Core", "Vendor"];
+}
+
 class RequestorID {
     private $MessagePassword;
     public function __construct($MessagePassword)
     {
-        $this->MessagePassword = $MessagePassword;
-    }
-}
-class Position {
-    private $Latitude;
-    private $Longitude;
-    private $Altitude;
-    private $AltitudeUnitOfMeasureCode;
-    private $PositionAccuracyCode;
-    public function __construct($Latitude, $Longitude, $Altitude, $AltitudeUnitOfMeasureCode, $PositionAccuracyCode)
-    {
-        $this->Latitude  = $Latitude;       // all string
-        $this->Longitude = $Longitude;
-        $this->Altitude  = $Altitude;
-        $this->AltitudeUnitOfMeasureCode = $AltitudeUnitOfMeasureCode;
-        $this->PositionAccuracyCode = $PositionAccuracyCode;
+        $this->MessagePassword = $MessagePassword;  //string
     }
 }
 
+// this means that they can append any type of declared element
 class TPA_ExtensionsType {
     private $any;
-    public function __construct($any){
+    public function __construct($any=null){
         $this->any = $any;
     }
 }
 
 class CompanyNameType {
-
     private $_;
     private $CompanyShortName;
     private $TravelSector;
@@ -62,7 +54,7 @@ class BookingChannel {
      private $Type;
      private $Primary;
 
-    public function __construct($CompanyName, $TPA_Extensions, $Type, $Primary)
+    public function __construct($Type, $Primary, $CompanyName=null, $TPA_Extensions=null)
     {
         $this->CompanyName    = $CompanyName;   //CompanyNameType
         $this->TPA_Extensions = $TPA_Extensions;//TPA_ExtensionsType
@@ -70,6 +62,23 @@ class BookingChannel {
         $this->Primary        = $Primary;       //boolean
     }
 }
+
+class Position {
+    private $Latitude;
+    private $Longitude;
+    private $Altitude;
+    private $AltitudeUnitOfMeasureCode;
+    private $PositionAccuracyCode;
+    public function __construct($Latitude, $Longitude, $Altitude, $AltitudeUnitOfMeasureCode, $PositionAccuracyCode)
+    {
+        $this->Latitude  = $Latitude;       // all string
+        $this->Longitude = $Longitude;
+        $this->Altitude  = $Altitude;
+        $this->AltitudeUnitOfMeasureCode = $AltitudeUnitOfMeasureCode;
+        $this->PositionAccuracyCode = $PositionAccuracyCode;
+    }
+}
+
 class SourceType {
     private $RequestorID;
     private $Position;
@@ -86,12 +95,14 @@ class SourceType {
     private $ERSP_UserID;
     private $TerminalID;
 
-    public function __construct($RequestorID, $Position, $BookingChannel, $TPA_Extensions, $AgentSine, $PseudoCityCode, $ISOCountry, $ISOCurrency, $AgentDutyCode, $AirlineVendorID, $AirportCode, $FirstDepartPoint, $ERSP_UserID, $TerminalID)
+    public function __construct($AgentSine, $PseudoCityCode, $ISOCountry, $ISOCurrency, $AgentDutyCode, $AirlineVendorID, $AirportCode, $FirstDepartPoint, $ERSP_UserID, $TerminalID,
+                                $RequestorID=null, $Position=null, $BookingChannel=null, $TPA_Extensions=null )
     {
         $this->RequestorID      = $RequestorID;         //RequestorID
         $this->Position         = $Position;            //Position
         $this->BookingChannel   = $BookingChannel;      //BookingChannel
         $this->TPA_Extensions   = $TPA_Extensions;      //TPA_ExtensionsType
+
         $this->AgentSine        = $AgentSine;           //string
         $this->PseudoCityCode   = $PseudoCityCode;      //string
         $this->ISOCountry       = $ISOCountry;          //string
@@ -107,13 +118,13 @@ class SourceType {
 
 class ArrayOfSourceType{
     private $Source;
-    public function __construct($source)
+    public function __construct($source=null)
     {
-        $this->Source = $source;    //SourceType
+        $this->Source = $source;    //SourceType, unbounded
     }
 }
 
-class ProcessingInfo
+class ProcessingInfo extends anonymous
 {
     private $TargetSource;
     private $FlightSvcInfoIndicator;
@@ -125,13 +136,36 @@ class ProcessingInfo
 
     public function __construct($TargetSource, $FlightSvcInfoIndicator, $DisplayOrder, $ReducedDataIndicator, $BaseFaresOnlyIndicator, $SearchType, $AvailabilityIndicator)
     {
-        $this->TargetSource = $TargetSource;  //anonymous2
-        $this->FlightSvcInfoIndicator = $FlightSvcInfoIndicator;   //boolean
-        $this->DisplayOrder = $DisplayOrder; //DisplayOrderType
-        $this->ReducedDataIndicator = $ReducedDataIndicator; //boolean
-        $this->BaseFaresOnlyIndicator = $BaseFaresOnlyIndicator;   //boolean
-        $this->SearchType = $SearchType;       //anonymous3
-        $this->AvailabilityIndicator = $AvailabilityIndicator;    //boolean
+        $this->TargetSource           = $TargetSource;          //anonymous2
+        $this->FlightSvcInfoIndicator = $FlightSvcInfoIndicator;//boolean
+        $this->DisplayOrder           = $DisplayOrder;          //DisplayOrderType
+        $this->ReducedDataIndicator   = $ReducedDataIndicator;  //boolean
+        $this->BaseFaresOnlyIndicator = $BaseFaresOnlyIndicator;//boolean
+        $this->SearchType             = $SearchType;            //anonymous3
+        $this->AvailabilityIndicator  = $AvailabilityIndicator; //boolean
+    }
+}
+
+class OntologyCompanyType {
+    private $NameOrCode;
+    private $TravelSegment;
+    private $OntologyExtension;
+    public function __construct($NameOrCode, $TravelSegment, $OntologyExtension)
+    {
+
+        $this->NameOrCode        = $NameOrCode;       //OntologyCodeType
+        $this->TravelSegment     = $TravelSegment;     //TravelSegment
+        $this->OntologyExtension = $OntologyExtension; //OntologyExtensionType
+    }
+}
+
+class Ontology {
+    private $CompatibleWith;
+    private $OntologyExtension;
+    public function __construct($CompatibleWith, $OntologyExtension)
+    {
+        $this->CompatibleWith    = $CompatibleWith;     //CompatibleWith
+        $this->OntologyExtension = $OntologyExtension;  //OntologyExtensionType
     }
 }
 
@@ -142,7 +176,7 @@ class MultiModalOfferType {
     private $TripCharacteristics;
     private $TravelerCharacteristics;
     private $OntologyExtension;
-    public function __construct($RequestingParty, $Ontology, $RequestedOffer, $TripCharacteristics, $TravelerCharacteristics, $OntologyExtension)
+    public function __construct($RequestingParty=null, $Ontology=null, $RequestedOffer=null, $TripCharacteristics=null, $TravelerCharacteristics=null, $OntologyExtension=null)
     {
         $this->RequestingParty         = $RequestingParty;          //RequestingParty
         $this->Ontology                = $Ontology;                 //Ontology
@@ -165,7 +199,7 @@ class OriginDestinationInformationType {
     }
 }
 
-class for_function_OTA_AirLowFareSearchRQ 
+class for_function_OTA_AirLowFareSearchRQ extends anonymous
 {
     private $POS;
     private $ProcessingInfo;
@@ -191,32 +225,35 @@ class for_function_OTA_AirLowFareSearchRQ
     private $DirectFlightsOnly;
     private $AvailableFlightsOnly;
 
-    public function __construct($POS, $ProcessingInfo, $MultimodalOffer, $OriginDestinationInformation, $SpecificFlightInfo, $TravelPreferences, $TravelerInfoSummary, $ArrangerInfoSummary, $EchoToken, $TimeStamp, $Target, $TargetName, $Version, $TransactionIdentifier, $SequenceNmbr, $TransactionStatusCode, $RetransmissionIndicator, $CorrelationID, $PrimaryLangID, $AltLangID, $MaxResponses, $DirectFlightsOnly, $AvailableFlightsOnly)
+    public function __construct($EchoToken, $TimeStamp, $Target, $TargetName, $Version, $TransactionIdentifier, $SequenceNmbr, $TransactionStatusCode, $RetransmissionIndicator, $CorrelationID, $PrimaryLangID, $AltLangID, $MaxResponses, $DirectFlightsOnly, $AvailableFlightsOnly,
+                                $POS=null, $ProcessingInfo=null, $MultimodalOffer=null, $OriginDestinationInformation=null, $SpecificFlightInfo=null, $TravelPreferences=null, $TravelerInfoSummary=null, $ArrangerInfoSummary=null )
     {
-        $this->POS = $POS;   //ArrayOfSourceType
-        $this->ProcessingInfo = $ProcessingInfo;    //ProcessingInfo
-        $this->MultimodalOffer = $MultimodalOffer;   //MultiModalOfferType
-        $this->OriginDestinationInformation = $OriginDestinationInformation;  //OriginDestinationInformation
-        $this->SpecificFlightInfo = $SpecificFlightInfo;    //SpecificFlightInfoType
-        $this->TravelPreferences = $TravelPreferences;     //TravelPreferences
-        $this->TravelerInfoSummary = $TravelerInfoSummary;   //TravelerInfoSummary
-        $this->ArrangerInfoSummary = $ArrangerInfoSummary;   //AirArrangerType
-        $this->EchoToken = $EchoToken;     //string
-        $this->TimeStamp = $TimeStamp; //dateTime
-        $this->Target = $Target;     //anonymous12
-        $this->TargetName = $TargetName;    //string
-        $this->Version = $Version;       //decimal
-        $this->TransactionIdentifier = $TransactionIdentifier; //string
-        $this->SequenceNmbr = $SequenceNmbr;      //nonNegativeInteger
-        $this->TransactionStatusCode = $TransactionStatusCode;     //anonymous13
-        $this->RetransmissionIndicator = $RetransmissionIndicator;       //boolean
-        $this->CorrelationID = $CorrelationID;     //string
-        $this->PrimaryLangID = $PrimaryLangID;     //language
-        $this->AltLangID = $AltLangID;         //language
-        $this->MaxResponses = $MaxResponses;      //positiveInteger
-        $this->DirectFlightsOnly = $DirectFlightsOnly; //boolean
-        $this->AvailableFlightsOnly = $AvailableFlightsOnly;  //boolean
+        $this->POS                          = $POS;                             //ArrayOfSourceType
+        $this->ProcessingInfo               = $ProcessingInfo;                  //ProcessingInfo
+        $this->MultimodalOffer              = $MultimodalOffer;                 //MultiModalOfferType
+        $this->OriginDestinationInformation = $OriginDestinationInformation;    //OriginDestinationInformation
+        $this->SpecificFlightInfo           = $SpecificFlightInfo;              //SpecificFlightInfoType
+        $this->TravelPreferences            = $TravelPreferences;               //TravelPreferences
+        $this->TravelerInfoSummary          = $TravelerInfoSummary;             //TravelerInfoSummary
+        $this->ArrangerInfoSummary          = $ArrangerInfoSummary;             //AirArrangerType
+
+        $this->EchoToken                    = $EchoToken;                       //string
+        $this->TimeStamp                    = $TimeStamp;                       //dateTime
+        $this->Target                       = $Target;                          //anonymous12
+        $this->TargetName                   = $TargetName;                      //string
+        $this->Version                      = $Version;                         //decimal
+        $this->TransactionIdentifier        = $TransactionIdentifier;           //string
+        $this->SequenceNmbr                 = $SequenceNmbr;                    //nonNegativeInteger
+        $this->TransactionStatusCode        = $TransactionStatusCode;           //anonymous13
+        $this->RetransmissionIndicator      = $RetransmissionIndicator;         //boolean
+        $this->CorrelationID                = $CorrelationID;                   //string
+        $this->PrimaryLangID                = $PrimaryLangID;                   //language
+        $this->AltLangID                    = $AltLangID;                       //language
+        $this->MaxResponses                 = $MaxResponses;                    //positiveInteger
+        $this->DirectFlightsOnly            = $DirectFlightsOnly;               //boolean
+        $this->AvailableFlightsOnly         = $AvailableFlightsOnly;            //boolean
 	}
+
 }
 
 // Set the request parameters

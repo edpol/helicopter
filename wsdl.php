@@ -4,7 +4,7 @@
     <title>WSDL File</title>
     <style>
         body {background-color:black; color:white; font-family: Arial, serif;}
-        .box {margin-left:5px; float:left; padding:5px; border: red solid 1px; border-radius:10px; background-color:#333333;}
+        .box {margin-left:10px; float:left; padding:5px; border: red solid 1px; border-radius:10px; background-color:#333333;}
     </style>
 </head>
 <body>

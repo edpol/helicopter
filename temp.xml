@@ -1,0 +1,43 @@
+    <xs:complexType name="SourceType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="RequestorID">
+                <xs:complexType>
+                    <xs:complexContent mixed="false">
+                        <xs:extension base="tns:UniqueID_Type">
+                            <xs:attribute name="MessagePassword" type="xs:string"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="Position">
+                <xs:complexType>
+                    <xs:attribute name="Latitude" type="xs:string"/>
+                    <xs:attribute name="Longitude" type="xs:string"/>
+                    <xs:attribute name="Altitude" type="xs:string"/>
+                    <xs:attribute name="AltitudeUnitOfMeasureCode" type="xs:string"/>
+                    <xs:attribute name="PositionAccuracyCode" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="BookingChannel">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" maxOccurs="1" name="CompanyName" type="tns:CompanyNameType"/>
+                        <xs:element minOccurs="0" maxOccurs="1" name="TPA_Extensions" type="tns:TPA_ExtensionsType"/>
+                    </xs:sequence>
+                    <xs:attribute name="Type" type="xs:string"/>
+                    <xs:attribute name="Primary" type="xs:boolean"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" maxOccurs="1" name="TPA_Extensions" type="tns:TPA_ExtensionsType"/>
+        </xs:sequence>
+        <xs:attribute name="AgentSine" type="xs:string"/>
+        <xs:attribute name="PseudoCityCode" type="xs:string"/>
+        <xs:attribute name="ISOCountry" type="xs:string"/>
+        <xs:attribute name="ISOCurrency" type="xs:string"/>
+        <xs:attribute name="AgentDutyCode" type="xs:string"/>
+        <xs:attribute name="AirlineVendorID" type="xs:string"/>
+        <xs:attribute name="AirportCode" type="xs:string"/>
+        <xs:attribute name="FirstDepartPoint" type="xs:string"/>
+        <xs:attribute name="ERSP_UserID" type="xs:string"/>
+        <xs:attribute name="TerminalID" type="xs:string"/>
+    </xs:complexType>
