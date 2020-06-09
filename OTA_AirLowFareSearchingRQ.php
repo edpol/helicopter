@@ -49,10 +49,10 @@ class CompanyNameType {
 }
 
 class BookingChannel {
-     private $CompanyName;
-     private $TPA_Extensions;
-     private $Type;
-     private $Primary;
+    private $CompanyName;
+    private $TPA_Extensions;
+    private $Type;
+    private $Primary;
 
     public function __construct($Type, $Primary, $CompanyName=null, $TPA_Extensions=null)
     {
@@ -256,12 +256,38 @@ class for_function_OTA_AirLowFareSearchRQ extends anonymous
 
 }
 
+$EchoToken = "";
+$TimeStamp = date('Y-m-d H:i:s'); // dateTime;
+$Target = "Test"; // ["Test", "Production"];
+$TargetName = "";
+$Version = 1.0; // decimal
+$TransactionIdentifier = "";
+$SequenceNmbr = 5; //non negative integer
+$TransactionStatusCode = "";
+$RetransmissionIndicator = false;
+$CorrelationID = "";
+$PrimaryLangID = "";
+$AltLangID = "";
+$MaxResponses = 2; // positive integer
+$DirectFlightsOnly = false;
+$AvailableFlightsOnly = true;
+
 // Set the request parameters
 $parameters = new for_function_OTA_AirLowFareSearchRQ(
-
+    $EchoToken, $TimeStamp, $Target, $TargetName, $Version, $TransactionIdentifier, $SequenceNmbr, $TransactionStatusCode, $RetransmissionIndicator, $CorrelationID, $PrimaryLangID, $AltLangID, $MaxResponses, $DirectFlightsOnly, $AvailableFlightsOnly
 );
 
 $function = "OTA_AirLowFareSearchRQ";
+
+require_once('initialize.php');
+ini_set('soap.wsdl_cache_enabled', '0');
+
+$opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
+$context = stream_context_create($opts);
+$soapClientOptions = [ 'stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE ];
+
+$uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
+$client = new SoapClient( $uri, $soapClientOptions );
 
 // Invoke WS method (Function1) with the request params 
 $response = $client->__soapCall($function, array($parameters));

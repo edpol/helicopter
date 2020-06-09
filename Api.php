@@ -28,7 +28,7 @@ class Api {
         $this->bot = [];
         $this->bot[] = '    </soap:Body>';
         $this->bot[] = '</soap:Envelope>';
-        $this->bot[] = '';
+        $this->bot[] = '';  // this is so there will be an /r/n on the last line
     }
 
     public function allPackages()
@@ -43,16 +43,19 @@ class Api {
         return $this->callCurl($fields);
     }
 
-    public function specificPackage($id)
+    public function specificPackage($EchoToken, $ID, $Code, $dateRange=null, $Quantity=1)
     {
+        if (is_null($dateRange)) {
+            $dateRange = date("Y-m-d");
+        }
         $fields = [];
         $fields[] = '        <tak:OTA_PkgAvailRQ>';
         $fields[] = '            <tak:PkgAvailRQ EchoToken="Test">';
-        $fields[] = '                <ns:PackageRequest ID="100119">';
-        $fields[] = '                    <ns:DateRange Start="2020-05-15T00:00:00"/>';
+        $fields[] = '                <ns:PackageRequest ID="' . $ID . '">';
+        $fields[] = '                    <ns:DateRange Start="' .$dateRange . '"/>';
         $fields[] = '                 </ns:PackageRequest>';
         $fields[] = '                 <ns:CustomerCounts>';
-        $fields[] = '                     <ns:CustomerCount Code="ADT" Quantity="1"/>';
+        $fields[] = '                     <ns:CustomerCount Code="' . $Code . '" Quantity="' . $Quantity . '"/>';
         $fields[] = '                 </ns:CustomerCounts>';
         $fields[] = '             </tak:PkgAvailRQ>';
         $fields = array_merge($fields, $this->credentials);
@@ -144,6 +147,7 @@ class Api {
 
         $curl = curl_init();
         curl_setopt_array($curl, $options);
+        // if fields is empty then we are using getWsdl()
         if(!empty($fields)) {
             $fields = array_merge($this->top, $fields, $this->bot);
             $fields = $this->trimString($fields);
