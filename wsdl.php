@@ -33,19 +33,27 @@ try{
     $wsdl = $api->getWsdl();
 //  echo $wsdl;
 
+    /*
+     * this is to instantiate SoapClient to use the xml files to get information
+     */
     $opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
     $context = stream_context_create($opts);
     $soapClientOptions = [ 'stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE ];
-
     $uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
     $client = new SoapClient( $uri, $soapClientOptions );
 
+    /*
+     * This lists all of the methods available to us in the class SoapClient, used below
+     */
     echo "<p class='box'>";
     echo 'get_class_methods: ';
     $class_methods = get_class_methods($client);
     print_r($class_methods);
     echo "</p>\r\n";
 
+    /*
+     * here we get a list of the methods available to us from Takeflite
+     */
     echo "<p class='box'>";
     echo '__getFunctions: ';
     $classFunctions = $client->__getFunctions();

@@ -20,16 +20,40 @@
 
 require_once('initialize.php');
 
-$results =  $api->allPackages();
-
 echo "<p>" . date('Y-m-d H:i:s') . "</p>\r\n";
 
-$results = str_replace('<', "\r\n<", $results);
+/***********************************************************************************************************************
+ * Setup to instantiate class SoapClient
+ */
+$opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
+$context = stream_context_create($opts);
+$soapClientOptions = [ 'stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE ];
+$uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
+$client = new SoapClient( $uri, $soapClientOptions );
 
+// this will list the functions available from Takeflite
+echo "<p class='box'>";
+echo "Here we are using the PHP class SoapClient to get the available functions from TakeFlite<br />\r\n";
+echo "<b>__getFunctions</b><br />\r\n";
+$classFunctions = $client->__getFunctions();
+foreach($classFunctions as $functions){
+    echo $functions . "<br />\r\n";
+}
+echo "</p>\r\n";
+echo "<div style='clear:both;'></div>";
+
+/***********************************************************************************************************************
+ * Here I am building the XML file and using cURL to get a response
+ */
+$results =  $api->allPackages();
+$results = str_replace('<', "\r\n<", $results);
 $TravelChoices = $consume->readAllPackages($results);
 
-echo "<b>ALL PACKAGES</b><br />\r\n";
+echo "<hr />\r\n";
+echo "<b>ALL PACKAGES</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
 echo "Type Returned: <u>" . gettype($TravelChoices) . "</u><br />\r\n";
+
+$caution_list = [];
 
 foreach ($TravelChoices as $TravelItem) {
 //    $DepartureAirport = $TravelItem->TravelDetail->OutwardTravel->AirSegment->DepartureAirport->attributes();
@@ -53,9 +77,13 @@ foreach ($TravelChoices as $TravelItem) {
             echo "Cautions: <br />\r\n";
             $Cautions = $TravelItem->Cautions;
             foreach ($Cautions->children() as $Caution) {
+                $temp = [];
                 foreach ($Caution->attributes() as $key4 => $value4) {
                     echo "&nbsp;&nbsp; $key4 = $value4 <br />\r\n";
+                    $z = (string) $value4;
+                    $temp = array_merge($temp,[$key4=>$z]);
                 }
+                $caution_list[] = $temp;
             }
         }
         echo "</p>\r\n";
@@ -84,34 +112,69 @@ OTA_AirLowFareSearchRQ {
 }
  */
 echo "<hr />\r\n";
-echo "<b>SPECIFIC PACKAGE</b><br />\r\n";
-$list = [ "EchoToken"=>"Test", "ID"=>"100119", "Code"=>"ADT", "Start"=>"2020-04-24T00:00:00", "Quantity"=>"1"];
-extract($list, EXTR_OVERWRITE);
-$results =  $api->specificPackage($EchoToken, $ID, $Code, $Start, $Quantity);
-$OTA_PkgAvailRQResult = $consume->readSpecificPackage($results);
+echo "<b>SPECIFIC PACKAGE</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
 
-echo "<p class='box'>\r\n";
+$EchoToken = "Test";
+$Code = "ADT";
+$Quantity = "1";
 
-if(isset($OTA_PkgAvailRQResult->Errors)){
-    echo "Errors: <br />\r\n";
-    $Errors = $OTA_PkgAvailRQResult->Errors;
+//$ID = "100119";
+//$Start = "2020-04-24T00:00:00";
+foreach($caution_list as $data) {
+    $ID = $data['ID'];
+    $Start = $data['Start'];
 
-    foreach($list as $key => $value){
-        echo "{$key}: {$value} <br />\r\n";
-    }
+    $results = $api->specificPackage($EchoToken, $ID, $Code, $Start, $Quantity);
+    $OTA_PkgAvailRQResult = $consume->readSpecificPackage($results);
 
-    $error_count = 1;
-    foreach ($Errors->children() as $Error) {
-        echo "Error #" . $error_count++ . ": <br />\r\n";
-        foreach ($Error->attributes() as $key4 => $value4) {
-            echo "&nbsp;&nbsp; $key4 = $value4 <br />\r\n";
+    echo "<p class='box'>\r\n";
+    if (gettype($OTA_PkgAvailRQResult)=="string"){
+        echo $OTA_PkgAvailRQResult;
+    } elseif (isset($OTA_PkgAvailRQResult->Package)){
+        echo "Success: <br />\r\n";
+        $Package = $OTA_PkgAvailRQResult->Package;
+        foreach($Package->attributes() as $key => $value){
+            echo "{$key}: $value <br />\r\n";
+        }
+        foreach($Package->PriceInfo->attributes() as $key => $value){
+            echo "{$key}: $value <br />\r\n";
+        }
+        $i = 1;
+        foreach($Package->ItineraryItems->children() as $key1 => $ItineraryItem){
+            echo "<br />\r\n";
+            echo "Itinerary Item #". $i++ . "<br />\r\n";
+            $Flight = $ItineraryItem->Flight;
+            foreach($Flight->attributes() as $key2 => $value2){
+                echo "&nbsp;&nbsp; {$key2}: $value2 <br />\r\n";
+            }
+
+            foreach($Flight->children() as $key2 => $value2){
+                foreach($value2->attributes() as $key3 => $value3){
+                    echo "&nbsp;&nbsp; {$key3}: $value3 <br />\r\n";
+                }
+            }
+        }
+
+    } elseif (isset($OTA_PkgAvailRQResult->Errors)) {
+        echo "Errors: <br />\r\n";
+        $Errors = $OTA_PkgAvailRQResult->Errors;
+
+        $list = compact("EchoToken", "ID", "Code", "Start", "Quantity");
+        foreach ($list as $key => $value) {
+            echo "{$key}: {$value} <br />\r\n";
+        }
+
+        $error_count = 1;
+        foreach ($Errors->children() as $Error) {
+            echo "Error #" . $error_count++ . ": <br />\r\n";
+            foreach ($Error->attributes() as $key4 => $value4) {
+                echo "&nbsp;&nbsp; $key4 = $value4 <br />\r\n";
+            }
         }
     }
 
-}else{
-    echo "No Error";
+    echo "</p>\r\n";
 }
-echo "</p>\r\n";
 echo "<div style='clear:both;'></div>";
 ?>
 </body>
