@@ -67,9 +67,7 @@ foreach ($TravelChoices as $TravelItem) {
             foreach ($AirSegment->children() as $key1 => $value1) {
                 echo '     ' . $key1 . ': ';
                 $child = $AirSegment->{$key1};
-                foreach ($child->attributes() as $key2 => $value2) {
-                    echo " $key2 = $value2 ";
-                }
+                dumpAttributes("", " = ", $child, false);
                 echo "<br />\r\n";
             }
         }
@@ -133,25 +131,18 @@ foreach($caution_list as $data) {
     } elseif (isset($OTA_PkgAvailRQResult->Package)){
         echo "Success: <br />\r\n";
         $Package = $OTA_PkgAvailRQResult->Package;
-        foreach($Package->attributes() as $key => $value){
-            echo "{$key}: $value <br />\r\n";
-        }
-        foreach($Package->PriceInfo->attributes() as $key => $value){
-            echo "{$key}: $value <br />\r\n";
-        }
+        dumpAttributes("", ": ", $Package,true);
+        $PriceInfo = $Package->PriceInfo;
+        dumpAttributes("", ": ", $PriceInfo,true);
         $i = 1;
         foreach($Package->ItineraryItems->children() as $key1 => $ItineraryItem){
             echo "<br />\r\n";
             echo "Itinerary Item #". $i++ . "<br />\r\n";
             $Flight = $ItineraryItem->Flight;
-            foreach($Flight->attributes() as $key2 => $value2){
-                echo "&nbsp;&nbsp; {$key2}: $value2 <br />\r\n";
-            }
+            dumpAttributes("&nbsp;&nbsp;", ": ", $Flight,true);
 
             foreach($Flight->children() as $key2 => $value2){
-                foreach($value2->attributes() as $key3 => $value3){
-                    echo "&nbsp;&nbsp; {$key3}: $value3 <br />\r\n";
-                }
+                dumpAttributes("&nbsp;&nbsp;", ": ", $value2,true);
             }
         }
 
@@ -167,9 +158,7 @@ foreach($caution_list as $data) {
         $error_count = 1;
         foreach ($Errors->children() as $Error) {
             echo "Error #" . $error_count++ . ": <br />\r\n";
-            foreach ($Error->attributes() as $key4 => $value4) {
-                echo "&nbsp;&nbsp; $key4 = $value4 <br />\r\n";
-            }
+            dumpAttributes("&nbsp;&nbsp;", " = ", $Error,true);
         }
     }
 

@@ -7,3 +7,4 @@ $api = new Api($AgentLogin, $AgentPassword, $ServiceId);
 require_once('Consume.php');
 $consume = new Consume();
 
+require_once('functions.php');
