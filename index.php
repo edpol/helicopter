@@ -88,26 +88,9 @@ foreach ($TravelChoices as $TravelItem) {
     }
 }
 echo "<div style='clear:both;'></div>";
-/*
-                <TravelChoices xmlns="http://www.opentravel.org/OTA/2003/05">
-                    <TravelItem>
-                        <TravelDetail>
-                            <OutwardTravel>
-                                <AirSegment TravelCode="Dog Sled Tour">
-                                    <DepartureAirport LocationCode="JNU" CodeContext="IATA"/>
-                                    <ArrivalAirport LocationCode="JNU" CodeContext="IATA"/>
-                                    <OperatingAirline/>
-                                </AirSegment>
-                            </OutwardTravel>
-                        </TravelDetail>
-                        <Cautions>
-                            <Caution Start="2021-05-10T00:00:00" End="2021-08-15T00:00:00" ID="128257"/>
-                        </Cautions>
-/*
-OTA_AirLowFareSearchRQ {
-    OTA_AirLowFareSearchRQ AirLowFareSearchRQ;
-    CredentialsType Credentials;
-}
+
+/***********************************************************************************************************************
+ * Here I am building the XML file using the results from the previous results above and using cURL to get a response
  */
 echo "<hr />\r\n";
 echo "<b>SPECIFIC PACKAGE</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
@@ -116,14 +99,13 @@ $EchoToken = "Test";
 $Code = "ADT";
 $Quantity = "1";
 
-//$ID = "100119";
-//$Start = "2020-04-24T00:00:00";
+//$caution_list is from the results of above call
 foreach($caution_list as $data) {
     $ID = $data['ID'];
     $Start = $data['Start'];
 
-    $results = $api->specificPackage($EchoToken, $ID, $Code, $Start, $Quantity);
-    $OTA_PkgAvailRQResult = $consume->readSpecificPackage($results);
+    $response = $api->specificPackage($EchoToken, $ID, $Code, $Start, $Quantity);
+    $OTA_PkgAvailRQResult = $consume->readSpecificPackage($response);
 
     echo "<p class='box'>\r\n";
     if (gettype($OTA_PkgAvailRQResult)=="string"){
@@ -165,6 +147,75 @@ foreach($caution_list as $data) {
     echo "</p>\r\n";
 }
 echo "<div style='clear:both;'></div>";
+
+/***********************************************************************************************************************
+ * Here I am building the XML file and using cURL to get a response
+ */
+echo "<hr />\r\n";
+echo "<b>BOOKING REQUEST</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
+
+$EchoToken = "BooktestLerry";
+$UniqueID = "reference";
+$ID = "128256";
+$TravelCode = "Icefield Excursion";
+$Start = "2021-04-26T16:15:00";
+$DepartureDateTime = "2021-04-26T16:15:00";
+$ArrivalDateTime = "2021-04-26T17:10:00";
+$TravelCodeID = "123925";
+$Duration = "55";
+$CheckInDate = "2021-04-26T15:45:00";
+$DepartureAirport = "Juneau Airport";
+$ArrivalAirport = "Juneau Airport";
+$FlightNumber = "IE1615";
+$Telephone = "123456789x";
+
+$RPH = array("1", "2");
+$Gender = array("Male", "Female");
+$Code = array("ADT", "ADT");
+$CodeContext = array("AQT", "AQT");
+$Quantity = array("1", "1");
+$GivenName = array("John", "Jane");
+$MiddleName = null;
+$Surname = array("Doe", "Doe");
+$NameTitle = null;
+$SpecializedNeed = array( array("Weight"=>98, "Allergies"=>"Peanut"), array("Weight"=>97) );
+$SpecializedNeed = array( array("Weight"=>98), array("Weight"=>97) );
+$PaymentType = "34";
+$Address = null;
+$Email = "person@example.com";
+
+$results = $api->bookingRequest($EchoToken, $UniqueID, $ID, $TravelCode, $Start, $DepartureDateTime, $ArrivalDateTime,
+    $TravelCodeID, $Duration, $CheckInDate, $DepartureAirport, $ArrivalAirport, $FlightNumber, $Telephone,
+    $RPH, $Gender, $Code, $CodeContext, $Quantity, $PaymentType, $Address,
+    $Email, $GivenName, $MiddleName, $Surname, $NameTitle , $SpecializedNeed);
+
+$OTA_PkgBookRQResult = $consume->readBookingRequest($results);
+
+    echo "<p class='box'>\r\n";
+//FAIL: xml format error
+if(isset($OTA_PkgBookRQResult->Reason)){
+    foreach($OTA_PkgBookRQResult->Reason as $Fault){
+        echo "XML Format Fault: " . $Fault . ": <br />\r\n";
+    }
+}
+
+// ERROR: didn't like the data sent
+if(isset($OTA_PkgBookRQResult->Errors)){
+    foreach($OTA_PkgBookRQResult->Errors as $Error){
+        echo "Error #" . $error_count++ . ": <br />\r\n";
+        dumpAttributes("&nbsp;&nbsp;", " = ", $Error,true);
+    }
+}
+
+// SUCCESS
+if(isset($OTA_PkgBookRQResult->Success)) {
+    echo "Success: <br/>\r\n";
+    dumpAttributes("&nbsp;&nbsp;", " = ", $OTA_PkgBookRQResult,true);
+    dumpAttributes("&nbsp;&nbsp;", ' = ', $OTA_PkgBookRQResult->PackageReservation->UniqueID, true);
+}
+echo "</p>\r\n";
+echo "<div style='clear:both;'></div>";
+
 ?>
 </body>
 </html>

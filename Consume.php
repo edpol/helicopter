@@ -80,14 +80,12 @@ class Consume
         $namespace = $namespaces[0];
 
         // check for failure
-        if (isset($xml->children($namespace, true)->Body->children()->OTA_PkgAvailRQResponse->OTA_PkgAvailRQResult)) {
-            $children = $xml->children($namespace, true)->Body->children()->OTA_PkgAvailRQResponse->OTA_PkgAvailRQResult;
-            return $children;
+        if  (isset($xml->children($namespace, true)->Body->children()->OTA_PkgAvailRQResponse->OTA_PkgAvailRQResult)) {
+            return $xml->children($namespace, true)->Body->children()->OTA_PkgAvailRQResponse->OTA_PkgAvailRQResult;
         }
-        return "Error, OTA_PkgAvailRQResult not found";
+        return "Error, OTA_PkgAvailRQResult not found ";
     }
 
-}
 /*
     <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <OTA_PkgAvailRQResponse xmlns="tflite.com/TakeFliteExternalService/">
@@ -123,3 +121,43 @@ class Consume
         </OTA_PkgAvailRQResponse>
     </s:Body>
 */
+
+public function readBookingRequest($inputString)
+{
+    // load the xml response string
+    $xml = @simplexml_load_string($inputString);
+    $namespaces = $this->buildNamespaceArray($xml);
+    $namespace = $namespaces[0];
+
+    if  (isset($xml->children($namespace, true)->Body->children()->Fault)) {
+        return $xml->children($namespace, true)->Body->children()->Fault;
+    }
+    if  (isset($xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult)) {
+        return $xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult;
+    }
+    return "Error, OTA_PkgAvailRQResult not found ";
+}
+/*
+ * fail
+    <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <OTA_PkgBookRQResponse xmlns="tflite.com/TakeFliteExternalService/">
+            <OTA_PkgBookRQResult EchoToken="BooktestLerry" TimeStamp="2020-06-11T22:28:42" Version="1.0">
+                <Errors xmlns="http://www.opentravel.org/OTA/2003/05">
+                    <Error Type="Advisory" ShortText="No availability" Code="322"/>
+                </Errors>
+            </OTA_PkgBookRQResult>
+        </OTA_PkgBookRQResponse>
+    </s:Body>
+ * Success
+    <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <OTA_PkgBookRQResponse xmlns="tflite.com/TakeFliteExternalService/">
+            <OTA_PkgBookRQResult EchoToken="BooktestLerry" TimeStamp="2020-06-12T17:13:45" Version="1.0">
+                <Success xmlns="http://www.opentravel.org/OTA/2003/05"/>
+                <PackageReservation xmlns="http://www.opentravel.org/OTA/2003/05">
+                    <UniqueID Type="16" ID="200005" ID_Context="Booking reference number"/>
+                </PackageReservation>
+            </OTA_PkgBookRQResult>
+        </OTA_PkgBookRQResponse>
+    </s:Body>
+ */
+}
