@@ -214,6 +214,74 @@ if(isset($OTA_PkgBookRQResult->Success)) {
     dumpAttributes("&nbsp;&nbsp;", ' = ', $OTA_PkgBookRQResult->PackageReservation->UniqueID, true);
 }
 echo "</p>\r\n";
+/*
+BOOKING FAIL didn't like some of the data
+
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+    <s:Header>
+        <a:Action s:mustUnderstand="1">tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgBookRQResponse</a:Action>
+    </s:Header>
+    <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <OTA_PkgBookRQResponse xmlns="tflite.com/TakeFliteExternalService/">
+            <OTA_PkgBookRQResult EchoToken="BooktestLerry" TimeStamp="2020-06-11T22:24:13" Version="1.0">
+                <Errors xmlns="http://www.opentravel.org/OTA/2003/05">
+                    <Error Type="Application error" ShortText="Start date is invalid" Code="136"/>
+                </Errors>
+            </OTA_PkgBookRQResult>
+        </OTA_PkgBookRQResponse>
+    </s:Body>
+</s:Envelope>
+
+
+->Body->OTA_PkgBookRQResponse->OTA_PkgBookRQResult
+
+
+This is a formatting error on my part - shouldnt get this one, but I'll lookout for it
+
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+    <s:Header>
+        <a:Action s:mustUnderstand="1">http://schemas.microsoft.com/net/2005/12/windowscommunicationfoundation/dispatcher/fault</a:Action>
+    </s:Header>
+    <s:Body>
+        <s:Fault>
+            <s:Code>
+                <s:Value>s:Receiver</s:Value>
+                <s:Subcode>
+                    <s:Value xmlns:a="http://schemas.microsoft.com/net/2005/12/windowscommunicationfoundation/dispatcher">a:InternalServiceFault</s:Value>
+                </s:Subcode>
+            </s:Code>
+            <s:Reason>
+                <s:Text xml:lang="en-US">The server was unable to process the request due to an internal error.  For more information about the error, either turn on IncludeExceptionDetailInFaults (either from ServiceBehaviorAttribute or from the &lt;serviceDebug&gt; configuration behavior) on the server in order to send the exception information back to the client, or turn on tracing as per the Microsoft .NET Framework SDK documentation and inspect the server trace logs.</s:Text>
+            </s:Reason>
+        </s:Fault>
+    </s:Body>
+</s:Envelope>
+
+->Body->Fault
+->Body->Fault->Reson->Text
+
+
+BOOKING SUCCESS
+
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+    <s:Header>
+        <a:Action s:mustUnderstand="1">tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgBookRQResponse</a:Action>
+    </s:Header>
+    <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <OTA_PkgBookRQResponse xmlns="tflite.com/TakeFliteExternalService/">
+            <OTA_PkgBookRQResult EchoToken="BooktestLerry" TimeStamp="2020-06-12T17:13:45" Version="1.0">
+                <Success xmlns="http://www.opentravel.org/OTA/2003/05"/>
+                <PackageReservation xmlns="http://www.opentravel.org/OTA/2003/05">
+                    <UniqueID Type="16" ID="200005" ID_Context="Booking reference number"/>
+                </PackageReservation>
+            </OTA_PkgBookRQResult>
+        </OTA_PkgBookRQResponse>
+    </s:Body>
+</s:Envelope>
+
+->Body->OTA_PkgBookRQResponse->OTA_PkgBookRQResult
+*/
+
 echo "<div style='clear:both;'></div>";
 
 ?>

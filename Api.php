@@ -109,12 +109,6 @@ class Api {
         $fields[]='           </tak:PkgBookRQ>';
         $fields=array_merge($fields, $this->credentials);
         $fields[]='        </tak:OTA_PkgBookRQ>';
-echo "<pre>";
-$temp=array_merge($this->top_book, $fields, $this->bot);
-foreach($temp as $row){
-    echo htmlentities($row) . "<br/>";
-}
-echo "</pre>";
 
         return $this->callCurl($fields, $this->top_book);
     }
