@@ -8,6 +8,7 @@ class Api {
     private $credentials;
     private $top_avail;
     private $top_book;
+    private $top_fare;
     private $bot;
 
 
@@ -21,14 +22,13 @@ class Api {
         $this->top_avail[]='    </soap:Header>';
         $this->top_avail[]='    <soap:Body>';
 
-        $this->top_book[] ='<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tak="tflite.com/TakeFliteExternalService/" xmlns:ns="http://www.opentravel.org/OTA/2003/05">';
-        $this->top_book[] ='    <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">';
-        $this->top_book[] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgBookRQ</wsa:Action>';
-        $this->top_book[] ='        <wsa:To>https://apps8.tflite.com/PublicService/Ota.svc</wsa:To>';
-        $this->top_book[] ='    </soap:Header>';
-        $this->top_book[] ='    <soap:Body>';
+        $this->top_book[] = $this->top_avail;
+        $this->top_book[2] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgBookRQ</wsa:Action>';
 
-        $this->credentials=array();
+        $this->top_fare[] = $this->top_avail;
+        $this->top_fare[2] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQ</wsa:Action>';
+
+    $this->credentials=array();
         $this->credentials[]='            <tak:Credentials>';
         $this->credentials[]='               <tak:AgentLogin>' . $AgentLogin . '</tak:AgentLogin>';
         $this->credentials[]='               <tak:AgentPassword>' . $AgentPassword . '</tak:AgentPassword>';
@@ -140,6 +140,30 @@ class Api {
         $fields[]='               </ns:PassengerListItems>';
         return $fields;
     }
+
+    public function AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationCode, $OriginCodeContext, $DestinationLocationCode, $DestinationCodeContext, $PassengerTypeQuantity )
+    {
+        $fields = array();
+        $fields[] = '        <tak:OTA_AirLowFareSearchRQ>';
+        $fields[] = '            <tak:AirLowFareSearchRQ EchoToken="' . $EchoToken . '">';
+        $fields[] = '                <ns:OriginDestinationInformation>';
+        $fields[] = '                    <ns:DepartureDateTime>' . $DepartureDate . '</ns:DepartureDateTime>';
+        $fields[] = '                    <ns:OriginLocation LocationCode="' . $OriginLocationCode . '" CodeContext="' . $OriginCodeContext . '"></ns:OriginLocation>';
+        $fields[] = '                    <ns:DestinationLocation LocationCode="' . $DestinationLocationCode . '" CodeContext="' . $DestinationCodeContext . '"></ns:DestinationLocation>';
+        $fields[] = '                </ns:OriginDestinationInformation>';
+        $fields[] = '                <ns:TravelerInfoSummary>';
+        $fields[] = '                    <ns:AirTravelerAvail>';
+        foreach ($PassengerTypeQuantity as $data){
+            $fields[] = '                        <ns:PassengerTypeQuantity Code="' . $data["Code"] . '" Quantity="' . $data["Quantity"] . '"/>';
+        }
+        $fields[]='                    </ns:AirTravelerAvail>';
+        $fields[]='                </ns:TravelerInfoSummary>';
+        $fields[]='            </tak:AirLowFareSearchRQ>';
+        $fields=array_merge($fields, $this->credentials);
+        $fields[]='        </tak:OTA_AirLowFareSearchRQ>';
+        return $this->callCurl($fields, $this->top_fare);
+    }
+
 
     public function trimString($fields){
         foreach($fields as $key => $line){

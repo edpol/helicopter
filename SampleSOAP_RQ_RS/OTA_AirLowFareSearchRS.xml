@@ -1,0 +1,30 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:tak="tflite.com/TakeFliteExternalService/" 
+    xmlns:ns="http://www.opentravel.org/OTA/2003/05">
+    <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
+        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQ</wsa:Action>
+        <wsa:To>https://apps8.tflite.com/PublicService/Ota.svc</wsa:To>
+    </soap:Header>
+    <soap:Body>
+        <tak:OTA_AirLowFareSearchRQ>
+            <tak:AirLowFareSearchRQ EchoToken="?">
+                <ns:OriginDestinationInformation>
+                    <ns:DepartureDateTime>08/July/2020</ns:DepartureDateTime>
+                    <ns:OriginLocation LocationCode="WLG" CodeContext="TF"></ns:OriginLocation>
+                    <ns:DestinationLocation LocationCode="NSN" CodeContext="TF"></ns:DestinationLocation>
+                </ns:OriginDestinationInformation>
+                <ns:TravelerInfoSummary>
+                    <ns:AirTravelerAvail>
+                        <ns:PassengerTypeQuantity Code="ADT" Quantity="1"/>
+                        <ns:PassengerTypeQuantity Code="8" Quantity="1"/>
+                    </ns:AirTravelerAvail>
+                </ns:TravelerInfoSummary>
+            </tak:AirLowFareSearchRQ>
+            <tak:Credentials>
+                <tak:AgentLogin>{{AgentLogin}}</tak:AgentLogin>
+                <tak:AgentPassword>{{AgentPassword}}</tak:AgentPassword>
+                <tak:ServiceId>{{ServiceId}}</tak:ServiceId>
+            </tak:Credentials>
+        </tak:OTA_AirLowFareSearchRQ>
+    </soap:Body>
+</soap:Envelope>

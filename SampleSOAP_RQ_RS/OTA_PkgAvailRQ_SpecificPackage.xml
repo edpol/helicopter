@@ -1,0 +1,25 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" 
+    xmlns:tak="tflite.com/TakeFliteExternalService/" 
+    xmlns:ns="http://www.opentravel.org/OTA/2003/05">
+    <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
+        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ</wsa:Action>
+        <wsa:To>https://apps8.tflite.com/PublicService/Ota.svc</wsa:To>
+    </soap:Header>
+    <soap:Body>
+        <tak:OTA_PkgAvailRQ>
+            <tak:PkgAvailRQ EchoToken="test">
+                <ns:PackageRequest ID="128257">
+                    <ns:DateRange Start="2021-05-10 00:00:00.000"/>
+                </ns:PackageRequest>
+                <ns:CustomerCounts>
+                    <ns:CustomerCount Code="ADT" Quantity="1"/>
+                </ns:CustomerCounts>
+            </tak:PkgAvailRQ>
+            <tak:Credentials>
+                <tak:AgentLogin>{{AgentLogin}}</tak:AgentLogin>
+                <tak:AgentPassword>{{AgentPassword}}</tak:AgentPassword>
+                <tak:ServiceId>{{ServiceId}}</tak:ServiceId>
+            </tak:Credentials>
+        </tak:OTA_PkgAvailRQ>
+    </soap:Body>
+</soap:Envelope>

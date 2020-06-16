@@ -200,12 +200,7 @@ if(isset($OTA_PkgBookRQResult->Reason)){
 }
 
 // ERROR: didn't like the data sent
-if(isset($OTA_PkgBookRQResult->Errors)){
-    foreach($OTA_PkgBookRQResult->Errors as $Error){
-        echo "Error #" . $error_count++ . ": <br />\r\n";
-        dumpAttributes("&nbsp;&nbsp;", " = ", $Error,true);
-    }
-}
+dumpErrors($OTA_PkgBookRQResult);
 
 // SUCCESS
 if(isset($OTA_PkgBookRQResult->Success)) {
@@ -283,6 +278,26 @@ BOOKING SUCCESS
 */
 
 echo "<div style='clear:both;'></div>";
+
+/***********************************************************************************************************************
+ * Here I am building the XML file and using cURL to get a response
+ */
+echo "<hr />\r\n";
+echo "<b>AIR LOW FARE SEARCH REQUEST</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
+
+$EchoToken = "?";
+$DepartureDate = "08/July/2020";
+$OriginLocationCode = "WLG";
+$OriginCodeContext = "TF";
+$DestinationLocationCode = "NSN";
+$DestinationCodeContext = "TF";
+$PassengerTypeQuantity = array( array("Code"=>"ADT", "Quantity"=>"1"), array("Code"=>"8", "Quantity"=>"1") );
+
+$results = $api->AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationCode, $OriginCodeContext, $DestinationLocationCode, $DestinationCodeContext, $PassengerTypeQuantity);
+$OTA_AirLowFareSearchRQResult = $consume->readAirLowFareSearchRQ($results);
+
+// ERROR: didn't like the data sent
+dumpErrors($OTA_PkgBookRQResult);
 
 ?>
 </body>

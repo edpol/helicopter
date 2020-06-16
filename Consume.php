@@ -58,6 +58,11 @@ class Consume
         $namespaces = $this->buildNamespaceArray($xml);
         $namespace = $namespaces[0];
 
+/*
+ *          was this FAILURE or ERROR ?????
+ *
+ */
+
         // check for failure
         if (isset($xml->children($namespace, true)->Body->Fault->Reason->Text)) {
             $children = $xml->children($namespace, true)->Body->Fault->Reason->Text;
@@ -122,21 +127,21 @@ class Consume
     </s:Body>
 */
 
-public function readBookingRequest($inputString)
-{
-    // load the xml response string
-    $xml = @simplexml_load_string($inputString);
-    $namespaces = $this->buildNamespaceArray($xml);
-    $namespace = $namespaces[0];
+    public function readBookingRequest($inputString)
+    {
+        // load the xml response string
+        $xml = @simplexml_load_string($inputString);
+        $namespaces = $this->buildNamespaceArray($xml);
+        $namespace = $namespaces[0];
 
-    if  (isset($xml->children($namespace, true)->Body->children()->Fault)) {
-        return $xml->children($namespace, true)->Body->children()->Fault;
+        if  (isset($xml->children($namespace, true)->Body->children()->Fault)) {
+            return $xml->children($namespace, true)->Body->children()->Fault;
+        }
+        if  (isset($xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult)) {
+            return $xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult;
+        }
+        return "Error, OTA_PkgAvailRQResult not found ";
     }
-    if  (isset($xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult)) {
-        return $xml->children($namespace, true)->Body->children()->OTA_PkgBookRQResponse->OTA_PkgBookRQResult;
-    }
-    return "Error, OTA_PkgAvailRQResult not found ";
-}
 /*
  * fail
     <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -160,4 +165,28 @@ public function readBookingRequest($inputString)
         </OTA_PkgBookRQResponse>
     </s:Body>
  */
+
+    public function readAirLowFareSearchRQ($inputString){
+        // load the xml response string
+        $xml = @simplexml_load_string($inputString);
+        $namespaces = $this->buildNamespaceArray($xml);
+        $namespace = $namespaces[0];
+
+        if  (isset($xml->children($namespace, true)->Body->children()->OTA_AirLowFareSearchRQResponse->OTA_AirLowFareSearchRQResult)) {
+            return $xml->children($namespace, true)->Body->children()->OTA_AirLowFareSearchRQResponse->OTA_AirLowFareSearchRQResult;
+        }
+        return "Error, OTA_PkgAvailRQResult not found ";
+    }
+
+/*
+<s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <OTA_AirLowFareSearchRQResponse xmlns="tflite.com/TakeFliteExternalService/">
+        <OTA_AirLowFareSearchRQResult EchoToken="?" TimeStamp="2020-06-16T01:33:14" Version="1.0">
+            <Errors xmlns="http://www.opentravel.org/OTA/2003/05">
+                <Error Type="Application error" ShortText="Itinerary not possible" Code="18"/>
+            </Errors>
+        </OTA_AirLowFareSearchRQResult>
+    </OTA_AirLowFareSearchRQResponse>
+
+*/
 }
