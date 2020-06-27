@@ -22,10 +22,10 @@ class Api {
         $this->top_avail[]='    </soap:Header>';
         $this->top_avail[]='    <soap:Body>';
 
-        $this->top_book[] = $this->top_avail;
+        $this->top_book = $this->top_avail;
         $this->top_book[2] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgBookRQ</wsa:Action>';
 
-        $this->top_fare[] = $this->top_avail;
+        $this->top_fare = $this->top_avail;
         $this->top_fare[2] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQ</wsa:Action>';
 
     $this->credentials=array();
@@ -172,10 +172,37 @@ class Api {
         return $fields;
     }
 
+    /*
+     * output the wsdl file to wsdl.xml if the existing one is more than one day old
+     * return that the file exists true or false
+     */
     public function getWsdl()
     {
-        $uri='https://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
-        return $this->callCurl('',$uri);
+        $uri = 'https://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
+        $cache = 'wsdl.xml';
+
+        // find out when the cache was last updated
+        if (file_exists($cache)) {
+            $modified = filemtime($cache);
+        }
+
+        // create or update the cache if necessary
+        if (!isset($modified) || $modified + CACHE_LIFETIME < time()) {
+            if ($xml = @ file_get_contents($uri)) {
+                //file_put_contents($cache, $xml);
+                $doc = new DOMDocument('1.0', 'utf-8');
+                $doc->formatOutput = true;
+                $node = dom_import_simplexml($xml);  // convert simpleXML data to DOM node
+                $node = $doc->importNode($node, true);  // import the converted xml can be imported into the empty dom document
+                $doc->appendChild($node);
+                $doc->save($cache);
+
+            }
+        }
+
+        // file_get_contents($uri) does the same thing
+//        return $this->callCurl('',$uri);
+        return file_exists($cache);
     }
 
     private function callCurl($fields, $top, $uri='https://apps8.tflite.com/PublicService/Ota.svc')

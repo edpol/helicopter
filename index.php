@@ -27,11 +27,22 @@ echo "<p>" . date('Y-m-d H:i:s') . "</p>\r\n";
  */
 $opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
 $context = stream_context_create($opts);
-$soapClientOptions = [ 'stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE ];
+$soapClientOptions = [ 'stream_context'=>$context, 'soap_version'=>SOAP_1_2, 'cache'=>WSDL_CACHE_NONE, 'trace'=>true ];
 $uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
-$client = new SoapClient( $uri, $soapClientOptions );
+try {
+    $client = new SoapClient($uri, $soapClientOptions);
+} catch (SoapFault $e) {
+    echo "<pre>";
+    print_r($e->getMessage());
 
-// this will list the functions available from Takeflite
+    if ($client instanceof SoapClient) {
+        var_dump($client->__getLastRequest(), $client->__getLastResponse());
+    }
+    echo "</pre>";
+}
+/***********************************************************************************************************************
+ *  this will list the functions available from Takeflite
+ */
 echo "<p class='box'>";
 echo "Here we are using the PHP class SoapClient to get the available functions from TakeFlite<br />\r\n";
 echo "<b>__getFunctions</b><br />\r\n";
@@ -44,6 +55,7 @@ echo "<div style='clear:both;'></div>";
 
 /***********************************************************************************************************************
  * Here I am building the XML file and using cURL to get a response
+ * this is the all packages request, even if they are full
  */
 $results =  $api->allPackages();
 $results = str_replace('<', "\r\n<", $results);
@@ -91,6 +103,7 @@ echo "<div style='clear:both;'></div>";
 
 /***********************************************************************************************************************
  * Here I am building the XML file using the results from the previous results above and using cURL to get a response
+ * this requests more information on individual packages. I'm looping through all of them.
  */
 echo "<hr />\r\n";
 echo "<b>SPECIFIC PACKAGE</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
@@ -296,8 +309,10 @@ $PassengerTypeQuantity = array( array("Code"=>"ADT", "Quantity"=>"1"), array("Co
 $results = $api->AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationCode, $OriginCodeContext, $DestinationLocationCode, $DestinationCodeContext, $PassengerTypeQuantity);
 $OTA_AirLowFareSearchRQResult = $consume->readAirLowFareSearchRQ($results);
 
+echo "<p class='box'>\r\n";
 // ERROR: didn't like the data sent
-dumpErrors($OTA_PkgBookRQResult);
+dumpErrors($OTA_AirLowFareSearchRQResult);
+echo "</p>\r\n";
 
 ?>
 </body>

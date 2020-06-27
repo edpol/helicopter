@@ -12,12 +12,16 @@ class Consume
     private function buildNamespaceArray($xml): array
     {
         $namespace_list = [];
+        // only returns namspaces that are used
         $namespaces = $xml->getNamespaces();
+        // displaces all namespaces declared
+//        $namespaces = $xml->getDocNamespaces();
         foreach($namespaces as $key => $value){
             $namespace_list[] = $key;
         }
-//      this will list the namespace
-//        $this->listMethods($namespaces, 'Namespaces');
+
+        // list methods in this class
+        // $this->listMethods($namespaces, 'Namespaces');
 
         if(count($namespace_list)===0) {
             $namespace_list[0] = '';
