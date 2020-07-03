@@ -25,21 +25,9 @@ echo "<p>" . date('Y-m-d H:i:s') . "</p>\r\n";
 /***********************************************************************************************************************
  * Setup to instantiate class SoapClient
  */
-$opts = [ 'ssl'=> ['verify_peer'=>false, 'verify_peer_name'=>false ] ];
-$context = stream_context_create($opts);
-$soapClientOptions = [ 'stream_context'=>$context, 'soap_version'=>SOAP_1_2, 'cache'=>WSDL_CACHE_NONE, 'trace'=>true ];
-$uri = 'http://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
-try {
-    $client = new SoapClient($uri, $soapClientOptions);
-} catch (SoapFault $e) {
-    echo "<pre>";
-    print_r($e->getMessage());
 
-    if ($client instanceof SoapClient) {
-        var_dump($client->__getLastRequest(), $client->__getLastResponse());
-    }
-    echo "</pre>";
-}
+$client = $api->instantiateSoapClient();
+
 /***********************************************************************************************************************
  *  this will list the functions available from Takeflite
  */

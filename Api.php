@@ -28,7 +28,7 @@ class Api {
         $this->top_fare = $this->top_avail;
         $this->top_fare[2] ='        <wsa:Action>tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_AirLowFareSearchRQ</wsa:Action>';
 
-    $this->credentials=array();
+        $this->credentials=array();
         $this->credentials[]='            <tak:Credentials>';
         $this->credentials[]='               <tak:AgentLogin>' . $AgentLogin . '</tak:AgentLogin>';
         $this->credentials[]='               <tak:AgentPassword>' . $AgentPassword . '</tak:AgentPassword>';
@@ -73,9 +73,8 @@ class Api {
         return $this->callCurl($fields, $this->top_avail);
     }
 
-    public function bookingRequest($EchoToken, $UniqueID, $ID, $TravelCode, $Start, $DepartureDateTime, $ArrivalDateTime, $TravelCodeID, $Duration,
-                                   $CheckInDate, $DepartureAirport, $ArrivalAirport, $FlightNumber, $Telephone,
-                                   $RPH, $Gender, $Code, $CodeContext, $Quantity, $PaymentType,
+    public function bookingRequest($EchoToken, $UniqueID, $ID, $TravelCode, $Start, $DepartureDateTime, $ArrivalDateTime, $TravelCodeID, $Duration, $CheckInDate,
+                                   $DepartureAirport, $ArrivalAirport, $FlightNumber, $Telephone, $RPH, $Gender, $Code, $CodeContext, $Quantity, $PaymentType,
                                    $Address=null, $Email=null, $GivenName=null, $MiddleName=null, $Surname=null, $NameTitle=null, $SpecializedNeed=null)
     {
         $fields=array();
@@ -178,31 +177,59 @@ class Api {
      */
     public function getWsdl()
     {
-        $uri = 'https://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl';
-        $cache = 'wsdl.xml';
+        $uri = WSDL_ADDR;
+        $wsdl_file = WSDL_FILE;
 
         // find out when the cache was last updated
-        if (file_exists($cache)) {
-            $modified = filemtime($cache);
+        if (file_exists($wsdl_file)) {
+            $modified = filemtime($wsdl_file);
         }
 
         // create or update the cache if necessary
         if (!isset($modified) || $modified + CACHE_LIFETIME < time()) {
-            if ($xml = @ file_get_contents($uri)) {
-                //file_put_contents($cache, $xml);
+            if ($string = @ file_get_contents($uri)) {
+                //file_put_contents($wsdl_file, $string);
+                $xml = new SimpleXMLElement($string);
                 $doc = new DOMDocument('1.0', 'utf-8');
                 $doc->formatOutput = true;
                 $node = dom_import_simplexml($xml);  // convert simpleXML data to DOM node
                 $node = $doc->importNode($node, true);  // import the converted xml can be imported into the empty dom document
                 $doc->appendChild($node);
-                $doc->save($cache);
-
+                $doc->save($wsdl_file);
+            } else {
+                return false;
             }
+            return true;
         }
 
         // file_get_contents($uri) does the same thing
 //        return $this->callCurl('',$uri);
-        return file_exists($cache);
+        return file_exists($wsdl_file);
+    }
+
+    public function instantiateSoapClient(){
+        if($this->getWsdl()) {
+            ini_set('soap.wsdl_cache_enabled', '0');
+            $http = ['method' => 'GET', 'header' => "Content-Type: application/soap+xml\r\n" . "Charset=utf-8\r\n",];
+            $ssl  = ['verify_peer' => false, 'verify_peer_name' => false];
+            $opts = [ 'http' => $http, 'ssl' => $ssl ];
+//            $context = stream_context_create($opts);
+//            $options = ['stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
+            $options = ['http' => $http, 'ssl' => $ssl, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
+
+//            $options['soapAction'] ='http://tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ';
+
+            $client = null;
+            try {
+                $client = new SoapClient(WSDL_FILE, $options);
+                return $client;
+            } catch (SoapFault $e) {
+                echo "<pre>";
+                dumpCatch($e, $client);
+                echo "</pre>";
+            }
+        }
+        return false;
     }
 
     private function callCurl($fields, $top, $uri='https://apps8.tflite.com/PublicService/Ota.svc')
