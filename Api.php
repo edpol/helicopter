@@ -180,6 +180,13 @@ class Api {
         $uri = WSDL_ADDR;
         $wsdl_file = WSDL_FILE;
 
+        // if the folder does not exist, create it
+        if(!is_dir(WSDL_FOLDER)){
+            if(!mkdir(WSDL_FOLDER, 0777, true)){
+                die("Could not create folder " . WSDL_FOLDER . ". Check access permissions. ");
+            }
+        }
+
         // find out when the cache was last updated
         if (file_exists($wsdl_file)) {
             $modified = filemtime($wsdl_file);
@@ -197,7 +204,7 @@ class Api {
                 $doc->appendChild($node);
                 $doc->save($wsdl_file);
             } else {
-                return false;
+                die("Could not create file " . WSDL_FILE . ". Check access permissions. ");
             }
             return true;
         }
