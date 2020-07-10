@@ -8,7 +8,7 @@
         color: white;
         font-family: Consolas, serif;
     }
-        .box {margin:6px; float:left; padding:5px; border: green solid 1px; border-radius:10px; background-color:#333333;}
+        .box {margin:6px; float:left; padding:5px; border: red solid 1px; border-radius:10px; background-color:#333333;}
 </style>
 </head>
 <body>
@@ -34,7 +34,14 @@ $client = $api->instantiateSoapClient();
 echo "<p class='box'>";
 echo "Here we are using the PHP class SoapClient to get the available functions from TakeFlite<br />\r\n";
 echo "<b>__getFunctions</b><br />\r\n";
-$classFunctions = $client->__getFunctions();
+
+try{
+    $classFunctions = $client->__getFunctions();
+} catch(Exception $e) {
+    echo "<pre>setSoapHeaders <br>";
+    dumpCatch($e, $client);
+    echo "</pre>";
+}
 foreach($classFunctions as $functions){
     echo $functions . "<br />\r\n";
 }
@@ -155,44 +162,46 @@ echo "<div style='clear:both;'></div>";
 echo "<hr />\r\n";
 echo "<b>BOOKING REQUEST</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
 
-$EchoToken = "BooktestLerry";
-$UniqueID = "reference";
-$ID = "128256";
-$TravelCode = "Icefield Excursion";
-$Start = "2021-04-26T16:15:00";
-$DepartureDateTime = "2021-04-26T16:15:00";
-$ArrivalDateTime = "2021-04-26T17:10:00";
-$TravelCodeID = "123925";
-$Duration = "55";
-$CheckInDate = "2021-04-26T15:45:00";
-$DepartureAirport = "Juneau Airport";
-$ArrivalAirport = "Juneau Airport";
-$FlightNumber = "IE1615";
-$Telephone = "123456789x";
-
-$RPH = array("1", "2");
-$Gender = array("Male", "Female");
-$Code = array("ADT", "ADT");
-$CodeContext = array("AQT", "AQT");
-$Quantity = array("1", "1");
-$GivenName = array("John", "Jane");
-$MiddleName = null;
-$Surname = array("Doe", "Doe");
-$NameTitle = null;
-$SpecializedNeed = array( array("Weight"=>98, "Allergies"=>"Peanut"), array("Weight"=>97) );
-$SpecializedNeed = array( array("Weight"=>98), array("Weight"=>97) );
-$PaymentType = "34";
-$Address = null;
-$Email = "person@example.com";
-
+$list = array(
+    "EchoToken" => "BooktestLerry",
+    "UniqueID" => "reference",
+    "ID" => "128256",
+    "TravelCode" => "Icefield Excursion",
+    "Start" => "2021-04-26T16:15:00",
+    "DepartureDateTime" => "2021-04-26T16:15:00",
+    "ArrivalDateTime" => "2021-04-26T17:10:00",
+    "TravelCodeID" => "123925",
+    "Duration" => "55",
+    "CheckInDate" => "2021-04-26T15:45:00",
+    "DepartureAirport" => "Juneau Airport",
+    "ArrivalAirport" => "Juneau Airport",
+    "FlightNumber" => "IE1615",
+    "Telephone" => "123456789x",
+    "RPH" => array("1", "2"),
+    "Gender" => array("Male", "Female"),
+    "Code" => array("ADT", "ADT"),
+    "CodeContext" => array("AQT", "AQT"),
+    "Quantity" => array("1", "1"),
+    "GivenName" => array("John", "Jane"),
+    "MiddleName" => null,
+    "Surname" => array("Doe", "Doe"),
+    "NameTitle" => null,
+    "SpecializedNeed" => array( array("Weight"=>98, "Allergies"=>"Peanut"), array("Weight"=>97) ),
+    "SpecializedNeed" => array( array("Weight"=>98), array("Weight"=>97) ),
+    "PaymentType" => "34",
+    "Address" => null,
+    "Email" => "person@example.com",
+);
+extract($list);
 $results = $api->bookingRequest($EchoToken, $UniqueID, $ID, $TravelCode, $Start, $DepartureDateTime, $ArrivalDateTime,
-    $TravelCodeID, $Duration, $CheckInDate, $DepartureAirport, $ArrivalAirport, $FlightNumber, $Telephone,
-    $RPH, $Gender, $Code, $CodeContext, $Quantity, $PaymentType, $Address,
-    $Email, $GivenName, $MiddleName, $Surname, $NameTitle , $SpecializedNeed);
+    $TravelCodeID, $Duration, $CheckInDate, $DepartureAirport, $ArrivalAirport, $FlightNumber, $Telephone, $RPH, $Gender, $Code,
+    $CodeContext, $Quantity, $PaymentType, $Address, $Email, $GivenName, $MiddleName, $Surname, $NameTitle , $SpecializedNeed);
 
 $OTA_PkgBookRQResult = $consume->readBookingRequest($results);
 
-    echo "<p class='box'>\r\n";
+echo "<p class='box'>\r\n";
+echoThis($list);
+
 //FAIL: xml format error
 if(isset($OTA_PkgBookRQResult->Reason)){
     foreach($OTA_PkgBookRQResult->Reason as $Fault){
@@ -286,18 +295,23 @@ echo "<div style='clear:both;'></div>";
 echo "<hr />\r\n";
 echo "<b>AIR LOW FARE SEARCH REQUEST</b>: Here we are using PHP to build XML query and sending it with cURL<br />\r\n";
 
-$EchoToken = "?";
-$DepartureDate = "08/July/2020";
-$OriginLocationCode = "WLG";
-$OriginCodeContext = "TF";
-$DestinationLocationCode = "NSN";
-$DestinationCodeContext = "TF";
-$PassengerTypeQuantity = array( array("Code"=>"ADT", "Quantity"=>"1"), array("Code"=>"8", "Quantity"=>"1") );
+$list = array (
+    "EchoToken" => "?",
+    "DepartureDate" => "08/July/2020",
+    "OriginLocationCode" => "WLG",
+    "OriginCodeContext" => "TF",
+    "DestinationLocationCode" => "NSN",
+    "DestinationCodeContext" => "TF",
+    "PassengerTypeQuantity" => array( array("Code"=>"ADT", "Quantity"=>"1"), array("Code"=>"8", "Quantity"=>"1") )
+);
+
+extract($list);
 
 $results = $api->AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationCode, $OriginCodeContext, $DestinationLocationCode, $DestinationCodeContext, $PassengerTypeQuantity);
 $OTA_AirLowFareSearchRQResult = $consume->readAirLowFareSearchRQ($results);
-
 echo "<p class='box'>\r\n";
+echoThis($list);
+
 // ERROR: didn't like the data sent
 dumpErrors($OTA_AirLowFareSearchRQResult);
 echo "</p>\r\n";

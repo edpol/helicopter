@@ -219,7 +219,7 @@ class Api {
             ini_set('soap.wsdl_cache_enabled', '0');
             $http = ['method' => 'GET', 'header' => "Content-Type: application/soap+xml\r\n" . "Charset=utf-8\r\n",];
             $ssl  = ['verify_peer' => false, 'verify_peer_name' => false];
-            $opts = [ 'http' => $http, 'ssl' => $ssl ];
+//            $opts = [ 'http' => $http, 'ssl' => $ssl ];
 //            $context = stream_context_create($opts);
 //            $options = ['stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
             $options = ['http' => $http, 'ssl' => $ssl, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];

@@ -5,6 +5,7 @@ defined('WSDL_FOLDER')    ? null : define('WSDL_FOLDER', __DIR__ . DS . 'xml_fil
 defined('WSDL_FILE')      ? null : define('WSDL_FILE', WSDL_FOLDER . DS . 'wsdl.xml');
 
 // DEVELOPMENT
+defined('ENDPOINT_LOCATION') ? null : define('ENDPOINT_LOCATION', 'https://apps8.tflite.com/PublicService/Ota.svc/mex/');
 defined('WSDL_ADDR')      ? null : define('WSDL_ADDR', 'https://apps8.tflite.com/PublicService/Ota.svc/mex?wsdl');
 defined('TRACE')          ? null : define('TRACE', true);
 

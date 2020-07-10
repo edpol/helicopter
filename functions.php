@@ -76,14 +76,32 @@ function dumpCatch($e, $soapClient){
     }
 }
 
-/*-1 0 +1
 
-&gt;&lt;/        -1
-elseif /&gt;&lt;  0
-else             +1
-
-if anything ></   -1
-elseif /><    0
-else ><    +1
-
-*/
+function echoThis($array, $indent = 0)
+{
+    $type = gettype($array);
+    switch ($type)
+    {
+        case "string":
+            echo str_repeat("_", $indent) . "$array <br />\r\n";
+            break;
+        case "array":
+            foreach ($array as $key => $value)
+            {
+                $type = gettype($value);
+                switch ($type) {
+                    case "NULL":
+                    case "integer":
+                    case "string":
+                        echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}: $value <br />\r\n";
+                        break;
+                    case "array":
+                        echoThis($value, $indent++);
+                        break;
+                    default:
+                        echo "$key $value type: $type <br />\r\n";
+                }
+            }
+            break;
+    }
+}
