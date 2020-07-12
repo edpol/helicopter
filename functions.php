@@ -77,31 +77,30 @@ function dumpCatch($e, $soapClient){
 }
 
 
-function echoThis($array, $indent = 0)
+function echoThis($array, $indent = -1)
 {
-    $type = gettype($array);
-    switch ($type)
-    {
-        case "string":
-            echo str_repeat("_", $indent) . "$array <br />\r\n";
-            break;
-        case "array":
-            foreach ($array as $key => $value)
-            {
-                $type = gettype($value);
-                switch ($type) {
-                    case "NULL":
-                    case "integer":
-                    case "string":
-                        echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}: $value <br />\r\n";
-                        break;
-                    case "array":
-                        echoThis($value, $indent++);
-                        break;
-                    default:
-                        echo "$key $value type: $type <br />\r\n";
-                }
+    $indent++;
+
+    if(gettype($array)=="array"){
+        foreach ($array as $key => $value)
+        {
+            $type = gettype($value);
+            switch ($type) {
+                case "NULL":
+                    break;
+                case "integer":
+                case "string":
+                    echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}: $value <br />\r\n";
+                    break;
+                case "array":
+                    echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}:<br />\r\n";
+                    echoThis($value, $indent);
+                    break;
+                default:
+                    echo "$key $value type: $type * <br />\r\n";
             }
-            break;
+        }
+    }else{
+        echo str_repeat("_", $indent) . "$array <br />\r\n";
     }
 }

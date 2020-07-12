@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
 <title>Helicopter</title>
+<link rel="icon" href="favicon.png">
 <style>
     body {
         background-color: black;
         color: white;
         font-family: Consolas, serif;
     }
-        .box {margin:6px; float:left; padding:5px; border: red solid 1px; border-radius:10px; background-color:#333333;}
+    .box {
+		margin:6px; 
+		float:left; 
+		padding:5px; 
+		border: red solid 1px; 
+		border-radius:10px; 
+		background-color:#333333;
+	}
 </style>
 </head>
 <body>
@@ -202,6 +210,9 @@ $OTA_PkgBookRQResult = $consume->readBookingRequest($results);
 echo "<p class='box'>\r\n";
 echoThis($list);
 
+echo "<br />\r\n";
+
+
 //FAIL: xml format error
 if(isset($OTA_PkgBookRQResult->Reason)){
     foreach($OTA_PkgBookRQResult->Reason as $Fault){
@@ -311,6 +322,10 @@ $results = $api->AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationC
 $OTA_AirLowFareSearchRQResult = $consume->readAirLowFareSearchRQ($results);
 echo "<p class='box'>\r\n";
 echoThis($list);
+
+echo "<br />\r\n";
+
+// add something for fail - meaning that the xml request is malformed
 
 // ERROR: didn't like the data sent
 dumpErrors($OTA_AirLowFareSearchRQResult);
