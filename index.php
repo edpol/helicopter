@@ -202,6 +202,9 @@ $OTA_PkgBookRQResult = $consume->readBookingRequest($results);
 echo "<p class='box'>\r\n";
 echoThis($list);
 
+echo "<br />\r\n";
+
+
 //FAIL: xml format error
 if(isset($OTA_PkgBookRQResult->Reason)){
     foreach($OTA_PkgBookRQResult->Reason as $Fault){
@@ -311,6 +314,10 @@ $results = $api->AirLowFareSearchRQ($EchoToken, $DepartureDate, $OriginLocationC
 $OTA_AirLowFareSearchRQResult = $consume->readAirLowFareSearchRQ($results);
 echo "<p class='box'>\r\n";
 echoThis($list);
+
+echo "<br />\r\n";
+
+// add something for fail - meaning that the xml request is malformed
 
 // ERROR: didn't like the data sent
 dumpErrors($OTA_AirLowFareSearchRQResult);
