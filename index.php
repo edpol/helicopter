@@ -25,6 +25,9 @@
 /*
  * XML calls that support gave us
  */
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require_once('initialize.php');
 
@@ -47,7 +50,7 @@ try{
     $classFunctions = $client->__getFunctions();
 } catch(Exception $e) {
     echo "<pre>setSoapHeaders <br>";
-    dumpCatch($e, $client);
+    dumpCatch($e, $client, "__getFunctions()");
     echo "</pre>";
 }
 foreach($classFunctions as $functions){

@@ -194,7 +194,19 @@ class Api {
 
         // create or update the cache if necessary
         if (!isset($modified) || $modified + CACHE_LIFETIME < time()) {
-            if ($string = @ file_get_contents($uri)) {
+
+            $http = ['user_agent' => 'PHPSoapClient', 'method' => 'GET', 'header' => "Content-Type: application/soap+xml\r\n" . "Charset=utf-8\r\n",];
+            $ssl  = ['verify_peer' => false, 'verify_peer_name' => false, 'verify_host' => false];
+            $options = [
+                'http' => $http,
+                'ssl' => $ssl,
+                'soap_version' => SOAP_1_2,
+                'cache' => WSDL_CACHE_NONE,
+                'trace' => TRACE
+            ];
+
+            if ($string = file_get_contents(WSDL_ADDR, false, stream_context_create($options))) {
+//            if ($string = $this->callCurl()){
                 //file_put_contents($wsdl_file, $string);
                 $xml = new SimpleXMLElement($string);
                 $doc = new DOMDocument('1.0', 'utf-8');
@@ -209,8 +221,6 @@ class Api {
             return true;
         }
 
-        // file_get_contents($uri) does the same thing
-//        return $this->callCurl('',$uri);
         return file_exists($wsdl_file);
     }
 
@@ -219,31 +229,30 @@ class Api {
             ini_set('soap.wsdl_cache_enabled', '0');
             $http = ['method' => 'GET', 'header' => "Content-Type: application/soap+xml\r\n" . "Charset=utf-8\r\n",];
             $ssl  = ['verify_peer' => false, 'verify_peer_name' => false];
-//            $opts = [ 'http' => $http, 'ssl' => $ssl ];
-//            $context = stream_context_create($opts);
-//            $options = ['stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
-            $options = ['http' => $http, 'ssl' => $ssl, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
-
-//            $options['soapAction'] ='http://tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ';
+            $opts = [ 'http' => $http, 'ssl' => $ssl ];
+            $params = [
+                'soap_version' => SOAP_1_2,
+                'cache' => WSDL_CACHE_NONE,
+                'trace' => true,
+                'stream_context' => stream_context_create($opts)
+            ];
 
             $client = null;
             try {
-                $client = new SoapClient(WSDL_FILE, $options);
+                $client = new SoapClient(WSDL_ADDR, $params);
                 return $client;
             } catch (SoapFault $e) {
                 echo "<pre>";
-                dumpCatch($e, $client);
+                dumpCatch($e, $client, __FUNCTION__." in ".__FILE__." at ".__LINE__);
                 echo "</pre>";
             }
         }
         return false;
     }
 
-    private function callCurl($fields, $top, $uri='https://apps8.tflite.com/PublicService/Ota.svc')
+    private function callCurl($fields=array(), $top=array(), $uri='https://apps8.tflite.com/PublicService/Ota.svc')
     {
-
         $options=array(
-            CURLOPT_URL => $uri,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -259,12 +268,18 @@ class Api {
         curl_setopt_array($curl, $options);
         // if fields is empty then we are using getWsdl()
         if(!empty($fields)) {
+            if(empty($top)){
+                echo "Missing second parameter 'top',  in curlCall<br />\r\n";
+                die();
+            }
             $fields=array_merge($top, $fields, $this->bot);
             $fields=$this->trimString($fields);
             $postFields=implode("\r\n", $fields);
+            curl_setopt($curl, CURLOPT_URL, $uri);
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
         } else {
+            curl_setopt($curl, CURLOPT_URL, $uri . '/mex?wsdl');
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         }
         $response=curl_exec($curl);
@@ -273,7 +288,7 @@ class Api {
         if($response === false)
         {
             echo 'Curl error: ' . curl_error($curl);
-            die();
+//            die();
         }
         return $response;
     }

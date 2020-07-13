@@ -8,8 +8,8 @@ if($dump) echo "1 ";
         if($dump) echo "2 ";
         echo "{$prefix} {$key}{$separator} {$value} {$eol}";
     }
-    if($dump) echo "3 ";
     if($dump){
+        echo "3 ";
         echo "<pre>";
         print_r($data);
     }
@@ -28,9 +28,9 @@ function dumpErrors($data){
 }
 
 
-function dumpCatch($e, $soapClient){
-    echo "<p><b><u>catch:</u></b> ";
-    echo htmlentities($e->getMessage());
+function dumpCatch($e, $soapClient, $location=''){
+    echo "<p><b><u>catch</u>:</b> ";
+    echo htmlentities($e->getMessage()) . " " . $location;
     echo "</p>" . PHP_EOL . PHP_EOL;
 
     if ($soapClient instanceof SoapClient) {
