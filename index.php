@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
 <title>Helicopter</title>
+<link rel="icon" href="favicon.png">
 <style>
     body {
         background-color: black;
         color: white;
         font-family: Consolas, serif;
     }
-        .box {margin:6px; float:left; padding:5px; border: red solid 1px; border-radius:10px; background-color:#333333;}
+    .box {
+		margin:6px; 
+		float:left; 
+		padding:5px; 
+		border: red solid 1px; 
+		border-radius:10px; 
+		background-color:#333333;
+	}
 </style>
 </head>
 <body>
@@ -17,6 +25,9 @@
 /*
  * XML calls that support gave us
  */
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require_once('initialize.php');
 
@@ -39,7 +50,7 @@ try{
     $classFunctions = $client->__getFunctions();
 } catch(Exception $e) {
     echo "<pre>setSoapHeaders <br>";
-    dumpCatch($e, $client);
+    dumpCatch($e, $client, "__getFunctions()");
     echo "</pre>";
 }
 foreach($classFunctions as $functions){

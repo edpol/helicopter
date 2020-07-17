@@ -2,7 +2,7 @@
 
 function dumpAttributes($prefix, $separator, $data, $newline, $dump=false )
 {
-if($dump) echo "1 ";
+    if($dump) echo "1 ";
     $eol = ($newline) ? "<br />\r\n" : "";
     foreach ($data->attributes() as $key => $value) {
         if($dump) echo "2 ";

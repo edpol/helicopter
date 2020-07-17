@@ -9901,17 +9901,17 @@
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
-                    <xs:attribute name="ID" type="xs:string"/>
-                    <xs:attribute name="Type" type="xs:string"/>
-                    <xs:attribute name="TravelCode" type="xs:string"/>
-                    <xs:attribute name="TourCode" type="xs:string"/>
-                    <xs:attribute name="ShortDescription" type="xs:string"/>
-                    <xs:attribute name="BoardCode" type="xs:string"/>
-                    <xs:attribute name="PromotionCode" type="xs:string"/>
-                    <xs:attribute name="BrandCode" type="xs:string"/>
-                    <xs:attribute name="ProductCode" type="xs:string"/>
+                    <xs:attribute name="ID"                type="xs:string"/>
+                    <xs:attribute name="Type"              type="xs:string"/>
+                    <xs:attribute name="TravelCode"        type="xs:string"/>
+                    <xs:attribute name="TourCode"          type="xs:string"/>
+                    <xs:attribute name="ShortDescription"  type="xs:string"/>
+                    <xs:attribute name="BoardCode"         type="xs:string"/>
+                    <xs:attribute name="PromotionCode"     type="xs:string"/>
+                    <xs:attribute name="BrandCode"         type="xs:string"/>
+                    <xs:attribute name="ProductCode"       type="xs:string"/>
                     <xs:attribute name="FreeChildQuantity" type="xs:integer"/>
-                    <xs:attribute name="CabinType" type="xs:string"/>
+                    <xs:attribute name="CabinType"         type="xs:string"/>
                 </xs:complexType>
             </xs:element>
             <xs:element minOccurs="0" maxOccurs="1" name="CustomerCounts" type="tns:ArrayOfCustomerCountsTypeCustomerCount"/>
