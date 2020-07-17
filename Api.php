@@ -194,7 +194,7 @@ class Api {
 
         // create or update the cache if necessary
         if (!isset($modified) || $modified + CACHE_LIFETIME < time()) {
-            if ($string = @ file_get_contents($uri)) {
+            if ($string = file_get_contents($uri)) {
                 //file_put_contents($wsdl_file, $string);
                 $xml = new SimpleXMLElement($string);
                 $doc = new DOMDocument('1.0', 'utf-8');
@@ -214,6 +214,24 @@ class Api {
         return file_exists($wsdl_file);
     }
 
+    public function setupHeader($client)
+    {
+        // can we write a function that populates this array?
+        $node_namespace['soap'] = "http://www.w3.org/2003/05/soap-envelope";
+        $node_namespace['tak'] = "tflite.com/TakeFliteExternalService/";
+        $node_namespace['ns'] = "http://www.opentravel.org/OTA/2003/05";  // for SOAP_1_2
+        $node_namespace['wsa'] = 'http://www.w3.org/2005/08/addressing';
+
+        /****************
+         * Header
+         */
+        $action_data = "tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ";
+        $to_data = 'https://apps8.tflite.com/PublicService/Ota.svc';
+        $action = new SoapHeader($node_namespace['wsa'], 'Action', $action_data, false);
+        $to = new SoapHeader($node_namespace['wsa'], 'To', $to_data, false);
+        return array('Action' => $action, 'To' => $to);
+    }
+
     public function instantiateSoapClient(){
         if($this->getWsdl()) {
             ini_set('soap.wsdl_cache_enabled', '0');
@@ -229,6 +247,8 @@ class Api {
             $client = null;
             try {
                 $client = new SoapClient(WSDL_FILE, $options);
+                $headerBody = $this->setupHeader($client);
+                $client->__setSoapHeaders($headerBody);
                 return $client;
             } catch (SoapFault $e) {
                 echo "<pre>";
@@ -241,7 +261,6 @@ class Api {
 
     private function callCurl($fields, $top, $uri='https://apps8.tflite.com/PublicService/Ota.svc')
     {
-
         $options=array(
             CURLOPT_URL => $uri,
             CURLOPT_RETURNTRANSFER => true,

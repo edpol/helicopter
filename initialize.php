@@ -13,9 +13,13 @@ defined('TRACE')          ? null : define('TRACE', true);
 //defined('WSDL_ADDR')      ? null : define('WSDL_ADDR', 'https://apps6.tflite.com/PublicService/Ota.svc/mex?wsdl');
 //defined('TRACE')          ? null : define('TRACE', false);
 
-require_once('Api.php');
 require_once('credentials.php');
+
+require_once('Api.php');
 $api = new Api($AgentLogin, $AgentPassword, $ServiceId);
+
+require_once('Request.php');
+$request = new Request($AgentLogin, $AgentPassword, $ServiceId);
 
 require_once('Consume.php');
 $consume = new Consume();

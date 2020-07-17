@@ -28,9 +28,9 @@ function dumpErrors($data){
 }
 
 
-function dumpCatch($e, $soapClient){
+function dumpCatch($e, $soapClient, $location=''){
     echo "<p><b><u>catch:</u></b> ";
-    echo htmlentities($e->getMessage());
+    echo htmlentities($e->getMessage()) . "<br />\r\n" . $location;
     echo "</p>" . PHP_EOL . PHP_EOL;
 
     if ($soapClient instanceof SoapClient) {
