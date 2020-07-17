@@ -123,8 +123,10 @@ class Api {
             $fields[]='                    <ns:PassengerListItem RPH="' . $RPH[$i] . '" Gender="' . $Gender[$i] . '" Code="' . $Code[$i] . '" CodeContext="' . $CodeContext[$i] . '" Quantity="' . $Quantity[$i] . '">';
             $fields[]='                        <ns:Name>';
             foreach($list as $tag){
-                $temp=(is_null($$tag[$i])) ? "<ns:{$tag}/>" : "<ns:{$tag}>{$$tag[$i]}</ns:{$tag}>";
-                $fields[]=str_repeat(" ", 28) . $temp;
+                if(!is_null($$tag)) {
+                    $temp = "<ns:{$tag}>{$$tag[$i]}</ns:{$tag}>";
+                    $fields[] = str_repeat(" ", 28) . $temp;
+                }
             }
             $needs=$SpecializedNeed[$i];
             foreach($needs as $data => $value) {
@@ -209,8 +211,6 @@ class Api {
             return true;
         }
 
-        // file_get_contents($uri) does the same thing
-//        return $this->callCurl('',$uri);
         return file_exists($wsdl_file);
     }
 
