@@ -128,6 +128,7 @@ class Api {
                     $fields[] = str_repeat(" ", 28) . $temp;
                 }
             }
+
             $needs=$SpecializedNeed[$i];
             foreach($needs as $data => $value) {
                 if(!is_null($value)) {
@@ -165,7 +166,6 @@ class Api {
         return $this->callCurl($fields, $this->top_fare);
     }
 
-
     public function trimString($fields){
         foreach($fields as $key => $line){
             $fields[$key]=trim($line);
@@ -196,7 +196,7 @@ class Api {
 
         // create or update the cache if necessary
         if (!isset($modified) || $modified + CACHE_LIFETIME < time()) {
-            if ($string = file_get_contents($uri)) {
+            if ($string = file_get_contents(WSDL_ADDR)) {
                 //file_put_contents($wsdl_file, $string);
                 $xml = new SimpleXMLElement($string);
                 $doc = new DOMDocument('1.0', 'utf-8');
@@ -237,16 +237,17 @@ class Api {
             ini_set('soap.wsdl_cache_enabled', '0');
             $http = ['method' => 'GET', 'header' => "Content-Type: application/soap+xml\r\n" . "Charset=utf-8\r\n",];
             $ssl  = ['verify_peer' => false, 'verify_peer_name' => false];
-//            $opts = [ 'http' => $http, 'ssl' => $ssl ];
-//            $context = stream_context_create($opts);
-//            $options = ['stream_context' => $context, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
-            $options = ['http' => $http, 'ssl' => $ssl, 'soap_version' => SOAP_1_2, 'cache' => WSDL_CACHE_NONE, 'trace' => TRACE ];
-
-//            $options['soapAction'] ='http://tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ';
+            $opts = [ 'http' => $http, 'ssl' => $ssl ];
+            $params = [
+                'soap_version' => SOAP_1_2,
+                'cache' => WSDL_CACHE_NONE,
+                'trace' => TRACE,
+                'stream_context' => stream_context_create($opts)
+            ];
 
             $client = null;
             try {
-                $client = new SoapClient(WSDL_FILE, $options);
+                $client = new SoapClient(WSDL_FILE, $params);
                 $headerBody = $this->setupHeader($client);
                 $client->__setSoapHeaders($headerBody);
                 return $client;
