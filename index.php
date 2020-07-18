@@ -1,3 +1,15 @@
+<?php
+namespace Takeflite;
+
+/*
+ * XML calls that support gave us
+ */
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once('initialize.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,17 +32,7 @@
 </style>
 </head>
 <body>
-
 <?php
-/*
- * XML calls that support gave us
- */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require_once('initialize.php');
-
 echo "<p>" . date('Y-m-d H:i:s') . "</p>\r\n";
 
 /***********************************************************************************************************************
@@ -333,6 +335,8 @@ echo "<br />\r\n";
 // ERROR: didn't like the data sent
 dumpErrors($OTA_AirLowFareSearchRQResult);
 echo "</p>\r\n";
+
+echo "<div style='clear:both;'></div>";
 
 ?>
 </body>

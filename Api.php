@@ -1,4 +1,5 @@
 <?php
+namespace Takeflite;
 /*
  * all the calls to the api
  * If all the strings in the array are single quote all the tags become lower case
@@ -227,8 +228,8 @@ class Api {
          */
         $action_data = "tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ";
         $to_data = 'https://apps8.tflite.com/PublicService/Ota.svc';
-        $action = new SoapHeader($node_namespace['wsa'], 'Action', $action_data, false);
-        $to = new SoapHeader($node_namespace['wsa'], 'To', $to_data, false);
+        $action = new \SoapHeader($node_namespace['wsa'], 'Action', $action_data, false);
+        $to = new \SoapHeader($node_namespace['wsa'], 'To', $to_data, false);
         return array('Action' => $action, 'To' => $to);
     }
 
@@ -247,7 +248,7 @@ class Api {
 
             $client = null;
             try {
-                $client = new SoapClient(WSDL_FILE, $params);
+                $client = new \SoapClient(WSDL_FILE, $params);
                 $headerBody = $this->setupHeader($client);
                 $client->__setSoapHeaders($headerBody);
                 return $client;

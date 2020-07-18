@@ -1,5 +1,5 @@
 <?php
-
+namespace Takeflite;
 /*
  * all the methods that consume the api results
  */
@@ -54,7 +54,7 @@ class Consume
         }
     }
 
-    public function readAllPackages($inputString): SimpleXMLElement
+    public function readAllPackages($inputString)
     {
         // load the xml response string
         $xml = @simplexml_load_string($inputString);

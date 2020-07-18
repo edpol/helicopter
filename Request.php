@@ -1,4 +1,5 @@
 <?php
+namespace Takeflite;
 /*
  * all the calls to the api
  * If all the strings in the array are single quote all the tags become lower case

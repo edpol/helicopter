@@ -1,4 +1,6 @@
 <?php
+namespace Takeflite;
+
 defined('DS')             ? null : define('DS', DIRECTORY_SEPARATOR);
 defined('CACHE_LIFETIME') ? null : define('CACHE_LIFETIME', 60 * 60 * 24);
 defined('WSDL_FOLDER')    ? null : define('WSDL_FOLDER', __DIR__ . DS . 'xml_files');
