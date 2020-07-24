@@ -17,11 +17,11 @@ defined('TRACE')          ? null : define('TRACE', true);
 
 require_once('credentials.php');
 
-require_once('Api.php');
-$api = new Api($AgentLogin, $AgentPassword, $ServiceId);
-
 require_once('Request.php');
 $request = new Request($AgentLogin, $AgentPassword, $ServiceId);
+
+require_once('Api.php');
+$api = new Api();
 
 require_once('Consume.php');
 $consume = new Consume();

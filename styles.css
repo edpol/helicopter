@@ -1,0 +1,78 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: Consolas, serif;
+}
+
+#wrapper{ margin:20px auto; width:1200px;}
+
+.box {
+    margin:6px;
+    float:left;
+    padding:5px;
+    border: red solid 1px;
+    border-radius:10px;
+    background-color:#333333;
+}
+
+.label1 {display:inline-block; width:100px;}
+
+.colorful a:link          { color:cyan;    }
+.colorful a:active        { color:red;     }
+.colorful a:visited       { color:magenta; }
+.colorful a:link:hover,
+.colorful a:visited:hover { color:green;   }
+
+.red_up, .red_down, .green_up, .green_down, .blue_up, .blue_down, .pink_up, .pink_down, .admin_up, .admin_down, .del_up, .del_down, .edit_up, .edit_down {
+    min-width:170px;
+    padding:12px 20px;
+    font-size:18px;
+    border-radius:24px;
+    color:white;
+    border:none;
+    font-weight:bold;
+    font-family:Arial, Helvetica, sans-serif;
+    text-decoration:none;
+    /*    letter-spacing:.1em;  */
+}
+
+.red_up     { background-image:linear-gradient(to bottom, #FF8888 0%, #CC3333 100%); }
+.red_down   { background-image:linear-gradient(to bottom, #CC3333 0%, #FF8888 100%); }
+.green_up   { background-image:linear-gradient(to bottom, #BBc577 0%, #61923b 100%); }
+.green_down { background-image:linear-gradient(to bottom, #61923b 0%, #BBc577 100%); }
+.blue_up    { background-image:linear-gradient(to bottom, #59707E 0%, #0E1F33 100%); }
+.blue_down  { background-image:linear-gradient(to bottom, #0E1F33 0%, #59707E 100%); }
+.pink_up    { background-image:linear-gradient(to bottom, #FFBBFF 0%, #FF66FF 100%); }
+.pink_down  { background-image:linear-gradient(to bottom, #FF66FF 0%, #FFBBFF 100%); }
+.del_up     { background-image:linear-gradient(to bottom, #FF8888 0%, #CC3333 100%); }
+.del_down   { background-image:linear-gradient(to bottom, #CC3333 0%, #FF8888 100%); }
+.edit_up    { background-image:linear-gradient(to bottom, #6F735A 0%, #070D0D 100%); }
+.edit_down  { background-image:linear-gradient(to bottom, #070D0D 0%, #6F735A 100%); }
+
+.pink_up,  .pink_down  { width:220px; }
+.edit_up,  .edit_down  { min-width:110px; }
+
+a.blue_up, a.blue_down, a.pink_up, a.pink_down {
+    padding:12px 50px;
+}
+.del_up, .del_down {
+    min-width:28px;
+    padding:6px 0;
+    font-size:11px;
+}
+
+.greenBox, .whiteBox, .blueBox  {
+    float:left;
+    padding:20px; border-radius:20px; display: inline-block;
+    margin-left:6px; margin-bottom:6px;
+    min-width: 540px; min-height: 150px;
+}
+.greenBox {
+    background:rgba(140, 190, 070, 0.5);
+}
+.whiteBox {
+    background:rgba(255, 255, 255, 0.3);
+}
+.blueBox {
+    background:rgba(180, 180, 255, 0.3);
+}
