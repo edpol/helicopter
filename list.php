@@ -1,8 +1,21 @@
 <?php
 namespace Takeflite;
+
+// didn't press the submit button
+if(!isset($_POST['submit']) || $_POST['submit']!=='submit'){
+    die('How did you get here?');
+}
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$api = $request = $output = null;
+require_once('initialize.php');
+
 ?>
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Helicopter</title>
         <link rel="icon" href="favicon.png">
@@ -14,11 +27,6 @@ namespace Takeflite;
     <body>
 
 <?php
-    // didn't press the submit button
-    if(!isset($_POST['submit']) || $_POST['submit']!=='submit'){
-        die('How did you get here?');
-    }
-
     // Can't pick dates in the past. if input was not empty and the date supplied is less than today, error
     $target_seconds = strtotime($_POST['search_date']);
     $cutoff = strtotime(" today ");
@@ -27,17 +35,9 @@ namespace Takeflite;
         echo "<a href='index.php'>Back</a>";
     }
 
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
-    $api = $request = null;
-    require_once('initialize.php');
-
     $client = $api->instantiateSoapClient();
-
     try{
-        // get all packages or just one
+        // get all packages or just packages for one date
         if(empty($_POST['search_date']) ) {
             $response = $request->AllPackages($client);
             $output_format = "AllPackages";
@@ -51,11 +51,9 @@ namespace Takeflite;
 
         // if the call worked display results, else display error message
         if(isset($response->OTA_PkgAvailRQResult->Success)) {
-            if($output_format === "AllPackages") { echo printAllPkgs($response); }
-            elseif($output_format === "PackagesSpecificDate") { echo printPkgList($response, $Start); }
-            else {die("Problem selecting report");}
+            echo $output->printList($response, $output_format);
         }else{
-            dumpErrors($response->OTA_PkgAvailRQResult);
+            echo dumpErrors($response->OTA_PkgAvailRQResult);
         }
 
     } catch(\Exception $e) {
@@ -65,5 +63,6 @@ namespace Takeflite;
         echo "</pre>";
     }
 ?>
+<script type="text/javascript" src="mysrc.js"></script>
     </body>
 </html>

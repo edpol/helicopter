@@ -15,6 +15,9 @@ defined('TRACE')          ? null : define('TRACE', true);
 //defined('WSDL_ADDR')      ? null : define('WSDL_ADDR', 'https://apps6.tflite.com/PublicService/Ota.svc/mex?wsdl');
 //defined('TRACE')          ? null : define('TRACE', false);
 
+if(!file_exists('credentials.php')) {
+    die('credentials.php not found');
+}
 require_once('credentials.php');
 
 require_once('Request.php');
@@ -25,5 +28,8 @@ $api = new Api();
 
 require_once('Consume.php');
 $consume = new Consume();
+
+require_once('Output.php');
+$output = new Output();
 
 require_once('functions.php');

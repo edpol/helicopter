@@ -1,5 +1,5 @@
 <?php
-namespace Takeflite;
+Namespace Takeflite;
 /*
  * all the calls to the api
  * If all the strings in the array are single quote all the tags become lower case
@@ -136,7 +136,9 @@ class Request {
                 "CustomerCount" => array( "Code"=>$Code, "Quantity"=>$Quantity)
             )
         );
-        return $this->OTA_PkgAvailRQ($client, $PkgAvailRQ);
+        $reply = $this->OTA_PkgAvailRQ($client, $PkgAvailRQ);
+        $reply->Start = $Start;
+        return $reply;
     }
 
     //  [7b]
@@ -154,79 +156,86 @@ class Request {
     //  [8] => OTA_PkgBookRQResponse OTA_PkgBookRQ(OTA_PkgBookRQ $parameters)
     public function OTA_PkgBookRQ($client, $parameters)
     {
-        $PassengerListItem = array();
-        $l = count($RPH);
-        for($i=0; $i<$l; $i++) {
-            $PassengerListItem[] = array(
-                "RPH" => "1", "Gender" => "Unknown", "Code" => "ADT", "CodeContext" => "AQT", "Quantity" => "1",
-                "Name" => array(
-                    "GivenName"    => array("_" => "John"),
-                    "MiddleName"  => array("_" => "G"),
-                    "Surname"     => array("_" => "Doe"),
-                    "NameTitle"   => array("_" => "Mr"),
-                    "SpecialNeed" => array("Code" => "Weight", "_" => "98")
-                )
-            );
+        $DepartureDateTime = "";
+        // create the variables from the first dimension, so you get arrays assigned to some of the variables
+        foreach($parameters as $key => $value){
+            $$key = $value;
         }
 
-        $PkgBookRQ = array(
-            "EchoToken" => "BooktestLerry",
-            "UniqueID" => array("ID" => "Reference"),
-            "PackageRequest" => array(
-                "ID" => "128256",
-                "TravelCode" => "Icefield Excursion",
-                "DateRange" => array(
-                    "Start" => "2021-04-26T16:15:00"
-                ),
-                "ItineraryItems" => array(
-                    "ItineraryItem" => array(
-                        "Flight" => array(
-                            "DepartureDateTime" => "2021-04-26T16:15:00",
-                            "ArrivalDateTime" => "2021-04-26T17:10:00",
-                            "TravelCode" => "123925",
-                            "Duration" => "55",
-                            "CheckInDate" => "2021-04-26T15:45:00",
-                            "DepartureAirport" => array("LocationCode" => "Juneau Airport"),
-                            "ArrivalAirport"   => array("LocationCode" => "Juneau Airport"),
-                            "OperatingAirline" => array("FlightNumber" => "IE1615"),
-                        )
-                    )
-                )
-            ),
-            "ContactDetail" => array(
-                "Telephone" => array("PhoneNumber" => "123456789x"),
-                "Email"     => array("_" => "person@example.com"),
-            ),
-            "PassengerListItems" => array(
-                "PassengerListItem" => array(
-                    "RPH" => "1", "Gender" => "Unknown", "Code" => "ADT", "CodeContext" => "AQT", "Quantity" => "1",
-                    "Name" => array(
-                        "GivenName"  => array("_" => "John"),
-                        "MiddleName" => array("_" => "G"),
-                        "Surname"    => array("_" => "Doe"),
-                        "NameTitle"  => array("_" => "Mr"),
-                        "SpecialNeed"=> array( "Code" => "Weight", "_" => "98")
-                    )
-                ),
-                "PassengerListItem" => array(
-                    "RPH" => "2", "Gender" => "Unknown", "Code" => "ADT", "CodeContext" => "AQT", "Quantity" => "1",
-                    "Name" => array(
-                        "GivenName"  => array("_" => "Jane"),
-                        "MiddleName" => array("_" => "G"),
-                        "Surname"    => array("_" => "Doe"),
-                        "NameTitle"  => array("_" => "Mrs"),
-                        "SpecialNeed"=> array( "Code" => "Weight", "_" => "97")
-                    )
-                )
-	        ),
-            "PaymentDetails" => array(
-                "PaymentDetail" => array(
-                    "PaymentType" => "34"
-                )
-            ),
-        );
+        $Flight_attributes = array('DepartureDateTime', 'ArrivalDateTime', 'TravelCode', 'Duration', 'CheckInDate');
+        $l = count($DepartureDateTime); // if there is a Flight there must be a departure time?
+        for($i=0; $i<$l; $i++) {
+            $Flight = array();
+            $prefix = 'Flight_';
+            foreach($Flight_attributes as $value){
+                if(($value === 'TravelCode') && isset(${$prefix . $value}[$i])) {
+                    $Flight[$value] = ${'Flight_' . $value}[$i];
+                }
+                if(isset($$value)) {
+                    $Flight[$value] = $$value[$i];
+                }
+            }
+
+            $Flight['DepartureAirport']['LocationCode'] = $DepartureAirport_LocationCode[$i];
+            $Flight['ArrivalAirport']['LocationCode']   = $ArrivalAirport_LocationCode[$i];
+            $Flight['OperatingAirline']['FlightNumber'] = $FlightNumber[$i];
+
+            $ItineraryItem[$i]['Flight'] = $Flight;
+        }
+
+        if(isset($PackageRequest_ID))         $PackageRequest['ID'] = $PackageRequest_ID;
+        if(isset($PackageRequest_TravelCode)) $PackageRequest['TravelCode'] = $PackageRequest_TravelCode;
+        if(isset($Start))                     $PackageRequest['DateRange']['Start'] = $Start;
+        if(isset($ItineraryItem))             $PackageRequest['ItineraryItems']['ItineraryItem'] = $ItineraryItem;
+
+        $PkgBookRQ = array();
+        if(isset($PackageRequest))            $PkgBookRQ['PackageRequest'] = $PackageRequest;
+        if(isset($EchoToken))                 $PkgBookRQ['EchoToken'] = $EchoToken;
+        if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID'] = $UniqueID_ID;
+
+        if(isset($PhoneNumber))               $PkgBookRQ['ContactDetail']['Telephone']['PhoneNumber'] = $PhoneNumber;
+        if(isset($Address))                   $PkgBookRQ['ContactDetail']['Address']['_'] = $Address;
+        if(isset($Email))                     $PkgBookRQ['ContactDetail']['Email']['_']   = $Email;
+
+        $k = 0;
+        $l = count($RPH); // if there is a PassengerListItem tag there must be a passenger count (RPH)
+        for($i=0; $i<$l; $i++) {
+            $PassengerListItem = array();
+            if(isset($RPH[$i]))                    $PassengerListItem['RPH']         = $RPH[$i];
+            if(isset($Gender[$i]))                 $PassengerListItem['Gender']      = $Gender[$i];
+            if(isset($PassengerListItem_Code[$i])) $PassengerListItem['Code']        = $PassengerListItem_Code[$i];
+            if(isset($CodeContext[$i]))            $PassengerListItem['CodeContext'] = $CodeContext[$i];
+            if(isset($CodeContext[$i]))            $PassengerListItem['Quantity']    = $Quantity[$i];
+
+            if(isset($GivenName[$i]))              $PassengerListItem['Name']['GivenName']['_']  = $GivenName[$i];
+            if(isset($MiddleName[$i]))             $PassengerListItem['Name']['MiddleName']['_'] = $MiddleName[$i];
+            if(isset($Surname[$i]))                $PassengerListItem['Name']['Surname']['_']    = $Surname[$i];
+            if(isset($NameTitle[$i]))              $PassengerListItem['Name']['NameTitle']['_']  = $NameTitle[$i];
+
+            if(isset($SpecialNeed_Code[$i] )) {
+                $PassengerListItem['Name']['SpecialNeed'] = array();
+                $j = 0;
+                $SpecialNeed = array();
+                foreach ($SpecialNeed_Code[$i] as $key => $value) {
+                    $SpecialNeed[$j]['Code'] = $key;    // Weight, Allergy
+                    $SpecialNeed[$j++]['_'] = $value;   // 98,     Shell Fish
+                }
+                $PassengerListItem['Name']['SpecialNeed'] = $SpecialNeed;
+            }
+
+            $PkgBookRQ['PassengerListItems']['PassengerListItem'][$k++] = $PassengerListItem;
+        }
+
+        $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
+
+        $parameters = array("PkgBookRQ" => $PkgBookRQ, "Credentials" => $this->Credentials);
+        try {
+            $response = $client->OTA_PkgBookRQ($parameters);
+        } catch (\Exception $e) {
+            dumpCatch($e, $client, __FUNCTION__ . " in " . __CLASS__ . " at " . __LINE__);
+            return false;
+        }
+        return $response;
     }
-
-
 
 }
