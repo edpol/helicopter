@@ -17,18 +17,19 @@ body {
 
 .label1 {display:inline-block; width:100px;}
 
-
 .del_up, .del_down, .blue_up, .blue_down {
     min-width:170px;
     padding:12px 20px;
-    font-size:18px;
+    font-size:14px;
     border-radius:24px;
     color:white;
     border:none;
-    font-weight:bold;
     font-family:Arial, Helvetica, sans-serif;
+    text-align: left;
+/*    letter-spacing:.1em;
     text-decoration:none;
-    /*    letter-spacing:.1em;  */
+    font-weight:bold;
+*/
 }
 
 .blue_up    { background-image:linear-gradient(to bottom, #59707E 0%, #0E1F33 100%); }
@@ -37,7 +38,7 @@ body {
 .del_down   { background-image:linear-gradient(to bottom, #CC3333 0%, #FF8888 100%); }
 
 a.blue_up, a.blue_down {
-    padding:12px 50px;
+    padding:20px 50px 50px 20px;
 }
 .del_up, .del_down {
     min-width:28px;
@@ -50,6 +51,9 @@ a.blue_up, a.blue_down {
     padding:20px; border-radius:20px; display: inline-block;
     margin-left:6px; margin-bottom:6px;
     min-width: 540px; min-height: 150px;
+    color: white;
+    text-align: left;
+    font-family: Consolas, serif;
 }
 .greenBox {
     background:rgba(140, 190, 070, 0.3);
@@ -59,12 +63,23 @@ a.blue_up, a.blue_down {
 }
 .blueBox {
     background:rgba(180, 180, 255, 0.3);
-    border-color: blue;
-    border-width: 2px;
 }
 
 .blueBox a:link          { color:cyan;    }
 .blueBox a:active        { color:red;     }
-.blueBox a:visited div      { color:yellow; }
+.blueBox a:visited div   { color:yellow; }
 .blueBox a:link:hover,
 .blueBox a:visited:hover { color:green;   }
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}

@@ -1,7 +1,8 @@
-$(function() {
-    $( "#datepicker, #datepicker2" ).datepicker();
-});
-
+if(document.getElementById("datepicker")) {
+    $(function () {
+        $("#datepicker, #datepicker2").datepicker();
+    });
+}
 /*
  *    setup listeners on class blue, pink and admin
  */
@@ -19,10 +20,11 @@ function buttonSetup (button) {
     }
 
     if (document.getElementsByClassName(button+"_up")) {
-        var a = document.getElementsByClassName(button+"_up");
-        var x;
-        for (var i = 0; i < a.length; ++i) {
+        let a = document.getElementsByClassName(button+"_up");
+        let x;
+        for (let i = 0; i < a.length; ++i) {
             x = a[i];
+console.log(x);
             x.addEventListener("mousedown", makeItHappenDown(x,button+"_down"), false);
             x.addEventListener("mouseup", makeItHappenUp(x,button+"_up"), false);
         }

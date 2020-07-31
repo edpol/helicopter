@@ -42,7 +42,7 @@ require_once('initialize.php');
             <input type="hidden" name="ID"   value="128257" />
             <input type="hidden" name="Code" value="ADT" />
             <p>
-                <input type="submit" name="submit" value="submit" class="blue_up" />
+                <input style="font-size:18px; text-align:center; " type="submit" name="submit" value="submit" class="blue_up" />
             </p>
         </form>
 <script type="text/javascript" src="mysrc.js"></script>

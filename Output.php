@@ -58,7 +58,7 @@ class Output {
         $ItineraryItem = $array['OTA_PkgAvailRQResult']['Package']['ItineraryItems']['ItineraryItem'];
         foreach($ItineraryItem as $value){
 //            $msg .= "<div class='blueBox'>";
-            $msg .= "<a style='display:block' class='blueBox' href='http://mdr.com'>";
+            $msg .= "<button class='blue_up' formaction='http://mdr.com'>\r\n";
             $msg .= "DepartureAirport: " . $value['Flight']['DepartureAirport']['LocationCode'] . "<br />\r\n";
             $msg .= "ArrivalAirport:   " . $value['Flight']['ArrivalAirport']['LocationCode']   . "<br />\r\n";
             $msg .= "FlightNumber:     " . $value['Flight']['OperatingAirline']['FlightNumber'] . "<br />\r\n";
@@ -67,7 +67,7 @@ class Output {
             foreach($list as $target) {
                 $msg .= "{$target}:   " . $value['Flight'][$target]   . "<br />\r\n";
             }
-            $msg .= "</a>\r\n";
+            $msg .= "</button>\r\n";
 //            $msg .= "</div>\r\n";  // id=blueBox
         }
 

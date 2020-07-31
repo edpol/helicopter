@@ -24,6 +24,7 @@ namespace Takeflite {
             $error_count = 1;
             foreach ($data->Errors as $Error) {
                 echo "Error #" . $error_count++ . ": <br />\r\n";
+//print_r($data);
                 dumpAttributes("&nbsp;&nbsp;", " = ", $data->Errors->Error, true);
             }
         }
