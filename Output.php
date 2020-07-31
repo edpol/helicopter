@@ -35,10 +35,11 @@ class Output {
     private function printPkgList($response)
     {
         $array = json_decode(json_encode($response->OTA_PkgAvailRQResult), true);
-echo "<pre>";
-print_r($array);
-echo "</pre>";
         $Start = $response->Start;
+        $EchoToken = $TimeStamp = $Version = null;
+        foreach($array as $key => $value){
+            $$key = $value;
+        }
 
         $msg  = "<div id='wrapper'>\r\n";
         $msg .= "<p>\r\n";
@@ -60,16 +61,29 @@ echo "</pre>";
         $ItineraryItem = $array['Package']['ItineraryItems']['ItineraryItem'];
         foreach($ItineraryItem as $value){
 //            $msg .= "<div class='blueBox'>";
-            $msg .= "<button class='book_up' formaction='http://mdr.com'>\r\n";
-            $msg .= "DepartureAirport: " . $value['Flight']['DepartureAirport']['LocationCode'] . "<br />\r\n";
-            $msg .= "ArrivalAirport:   " . $value['Flight']['ArrivalAirport']['LocationCode']   . "<br />\r\n";
-            $msg .= "FlightNumber:     " . $value['Flight']['OperatingAirline']['FlightNumber'] . "<br />\r\n";
+            $Flight = $value['Flight'];
+            $msg .= "<form style='float:left;' action='book.php' method='POST'>\r\n";
+            $msg .= "<button type='submit' class='book_up'>\r\n";
+            $msg .= "DepartureAirport: " . $Flight['DepartureAirport']['LocationCode'] . "<br />\r\n";
+            $msg .= "ArrivalAirport:   " . $Flight['ArrivalAirport']['LocationCode']   . "<br />\r\n";
+            $msg .= "FlightNumber:     " . $Flight['OperatingAirline']['FlightNumber'] . "<br />\r\n";
 
             $list = array( 'DepartureDateTime', 'ArrivalDateTime', 'TravelCode', 'Duration', 'CheckInDate');
+            $target_input = '';
             foreach($list as $target) {
                 $msg .= "{$target}:   " . $value['Flight'][$target]   . "<br />\r\n";
+                $target_input .= "<input type='hidden' name='{$target}' value='{$value['Flight'][$target]}' />\r\n";
             }
             $msg .= "</button>\r\n";
+            $msg .= "<input type='hidden' name='Start'       value='{$Start}'     />\r\n";
+            $msg .= "<input type='hidden' name='EchoToken'   value='{$EchoToken}' />\r\n";
+            $msg .= "<input type='hidden' name='TimeStamp'   value='{$TimeStamp}' />\r\n";
+            $msg .= "<input type='hidden' name='Version'     value='{$Version}'   />\r\n";
+            $msg .= "<input type='hidden' name='DepartureAirport_LocationCode' value='{$value['Flight']['DepartureAirport']['LocationCode']}' />\r\n";
+            $msg .= "<input type='hidden' name='ArrivalAirport_LocationCode'   value='{$value['Flight']['ArrivalAirport']['LocationCode']}'   />\r\n";
+            $msg .= "<input type='hidden' name='FlightNumber' value='{$value['Flight']['OperatingAirline']['FlightNumber']}' />\r\n";
+            $msg .= $target_input;
+            $msg .= "</form>\r\n";
 //            $msg .= "</div>\r\n";  // id=bookBox
         }
 

@@ -42,7 +42,7 @@ body {
 .book_up, .book_down {
     text-align: left;
     font-weight: normal;
-    margin-bottom: 10px;
+    margin: 6px;
     font-family: Consolas, serif;
 }
 .blue_up, .blue_down {
