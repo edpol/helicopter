@@ -1,56 +1,107 @@
+
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Helicopter</title>
-		<link rel="icon" href="../favicon.png">
-		<link href="../styles.css" rel="stylesheet" type="text/css">
-	</head>
-    <body>
+<head>
+	<title>Helicopter</title>
+	<link rel="icon" href="favicon.png">
+	<link href="styles.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+<body>
 
-		<div id='wrapper'>
-<form method="post">
-			<p>
-				Tours for 05/10/2021<br />
-				EchoToken:   test<br />
-				TimeStamp:   2020-07-31T05:51:48<br />
-				Version:     1.0<br />
-				Price:       888.00<br />
-				ID:          128257<br />
-				Travel Code: Dog Sled Tour<br />
-			</p>
-			<button class="blue_up" formaction="http://mdr.com">
-				DepartureAirport:  New York<br />
-				ArrivalAirport:    New York<br />
-				FlightNumber:      DS1305,DR1430<br />
-				DepartureDateTime: 2021-05-10T13:05:00<br />
-				ArrivalDateTime:   2021-05-10T14:42:00<br />
-				TravelCode:        126402,126477<br />
-				Duration:          97<br />
-				CheckInDate:       2021-05-10T12:35:00<br />
-			</button>
-			<button class='blueBox' formaction="http://p4bh.org">
-				DepartureAirport:  Juneau Airport<br />
-				ArrivalAirport:    Juneau Airport<br />
-				FlightNumber:      DS1305,DR1430<br />
-				DepartureDateTime: 2021-05-10T13:05:00<br />
-				ArrivalDateTime:   2021-05-10T14:42:00<br />
-				TravelCode:        126402,126477<br />
-				Duration:          97<br />
-				CheckInDate:       2021-05-10T12:35:00<br />
-			</button>
-	<input type="submit" name="submit" value="submit" class="blue_up" />
-</form>
-		</div>
-
-		<div style='clear:both;'></div>
-
-		<h2>CSS Buttons</h2>
-
-		<button>Default Button</button>
-		<a href="#" class="button">Link Button</a>
-		<button class="button">Button</button>
-		<input type="button" class="button" value="Input Button">
-
-		<script type="text/javascript" src="../mysrc.js"></script>
-    </body>
+<div id='wrapper'>
+	<p>
+		Tours for 05/10/2021<br />
+		EchoToken:   test<br />
+		TimeStamp:   2020-07-31T16:17:25<br />
+		Version:     1.0<br />
+		Price:       888.00<br />
+		ID:          128257<br />
+		Travel Code: Dog Sled Tour<br />
+	</p>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1305,DR1430<br />
+		DepartureDateTime:   2021-05-10T13:05:00<br />
+		ArrivalDateTime:   2021-05-10T14:42:00<br />
+		TravelCode:   126402,126477<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T12:35:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1340,DR1505<br />
+		DepartureDateTime:   2021-05-10T13:40:00<br />
+		ArrivalDateTime:   2021-05-10T15:17:00<br />
+		TravelCode:   126432,126507<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T13:10:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1415,DR1540<br />
+		DepartureDateTime:   2021-05-10T14:15:00<br />
+		ArrivalDateTime:   2021-05-10T15:52:00<br />
+		TravelCode:   126462,126537<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T13:45:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1450,DR1615<br />
+		DepartureDateTime:   2021-05-10T14:50:00<br />
+		ArrivalDateTime:   2021-05-10T16:27:00<br />
+		TravelCode:   126492,126567<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T14:20:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1525,DR1650<br />
+		DepartureDateTime:   2021-05-10T15:25:00<br />
+		ArrivalDateTime:   2021-05-10T17:02:00<br />
+		TravelCode:   126522,126597<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T14:55:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1600,DR1725<br />
+		DepartureDateTime:   2021-05-10T16:00:00<br />
+		ArrivalDateTime:   2021-05-10T17:37:00<br />
+		TravelCode:   126552,126627<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T15:30:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1635,DR1800<br />
+		DepartureDateTime:   2021-05-10T16:35:00<br />
+		ArrivalDateTime:   2021-05-10T18:12:00<br />
+		TravelCode:   126582,126656<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T16:05:00<br />
+	</button>
+	<button class='book_up' formaction='http://mdr.com'>
+		DepartureAirport: Juneau Airport<br />
+		ArrivalAirport:   Juneau Airport<br />
+		FlightNumber:     DS1710,DR1835<br />
+		DepartureDateTime:   2021-05-10T17:10:00<br />
+		ArrivalDateTime:   2021-05-10T18:47:00<br />
+		TravelCode:   126612,126684<br />
+		Duration:   97<br />
+		CheckInDate:   2021-05-10T16:40:00<br />
+	</button>
+</div>
+<script type="text/javascript" src="mysrc.js"></script>
+</body>
 </html>

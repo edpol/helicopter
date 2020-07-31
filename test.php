@@ -202,3 +202,15 @@ $parameters = array(
 );
 
 $x =  OTA_PkgBookRQ($parameters);
+
+?>
+<form action="book.php" method="post">
+
+<?php
+    $postvalue = array("a", "b", "c");
+    foreach($postvalue as $value)
+    {
+        echo '<input type="hidden" name="result[]" value="'. $value. '">';
+    }
+?>
+</form>

@@ -34,4 +34,5 @@ console.log(x);
 window.onload = function () {
     buttonSetup("del");
     buttonSetup("blue");
+    buttonSetup("book");
 }

@@ -17,7 +17,7 @@ body {
 
 .label1 {display:inline-block; width:100px;}
 
-.del_up, .del_down, .blue_up, .blue_down {
+.del_up, .del_down, .blue_up, .blue_down, .book_up, .book_down {
     min-width:170px;
     padding:12px 20px;
     font-size:14px;
@@ -25,27 +25,35 @@ body {
     color:white;
     border:none;
     font-family:Arial, Helvetica, sans-serif;
-    text-align: left;
+    text-align:center;
+    font-weight:bold;
 /*    letter-spacing:.1em;
     text-decoration:none;
-    font-weight:bold;
 */
 }
 
+.book_up    { background-image:linear-gradient(to bottom, #59707E 0%, #0E1F33 100%); }
+.book_down  { background-image:linear-gradient(to bottom, #0E1F33 0%, #59707E 100%); }
 .blue_up    { background-image:linear-gradient(to bottom, #59707E 0%, #0E1F33 100%); }
 .blue_down  { background-image:linear-gradient(to bottom, #0E1F33 0%, #59707E 100%); }
 .del_up     { background-image:linear-gradient(to bottom, #FF8888 0%, #CC3333 100%); }
 .del_down   { background-image:linear-gradient(to bottom, #CC3333 0%, #FF8888 100%); }
 
-a.blue_up, a.blue_down {
-    padding:20px 50px 50px 20px;
+.book_up, .book_down {
+    text-align: left;
+    font-weight: normal;
+    margin-bottom: 10px;
+    font-family: Consolas, serif;
+}
+.blue_up, .blue_down {
+    padding:12px 50px;
 }
 .del_up, .del_down {
     min-width:28px;
     padding:6px 0;
     font-size:11px;
 }
-
+/* not using
 .greenBox, .whiteBox, .blueBox  {
     float:left;
     padding:20px; border-radius:20px; display: inline-block;
@@ -83,3 +91,5 @@ a.blue_up, a.blue_down {
     margin: 4px 2px;
     cursor: pointer;
 }
+
+ */
