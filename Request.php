@@ -11,48 +11,59 @@ class Request {
     public function __construct($AgentLogin, $AgentPassword, $ServiceId)
     {
         $this->Credentials = array(
-            "AgentLogin" => $AgentLogin,
-            "AgentPassword" => $AgentPassword,
-            "ServiceId" => $ServiceId
+            'AgentLogin' => $AgentLogin,
+            'AgentPassword' => $AgentPassword,
+            'ServiceId' => $ServiceId
         );
     }
 
     //  [0] => OTA_AirLowFareSearchRQResponse OTA_AirLowFareSearchRQ(OTA_AirLowFareSearchRQ $parameters)
-    public function OTA_AirLowFareSearchRQ($client, $EchoToken, $Code, $Quantity, $DepartureDateTime,
-           $LocationCodeOrigin, $CodeContextOrigin, $LocationCodeDestination, $CodeContextDestination)
-    {
+    public function OTA_AirLowFareSearchRQ($client, $parameters) {
+        /*
+            These were the parameters used in the example given by Takeflite
+            $parameter = array('EchoToken'=>$EchoToken, 'Code'=>$Code, 'Quantity'=>$Quantity,
+                'DepartureDateTime'=>$DepartureDateTime, // dd/mmm/yyyy
+                'OriginLocation_LocationCode'=>$OriginLocation_LocationCode,
+                'OriginLocation_CodeContext'=>$OriginLocation_CodeContext,
+                'DestinationLocation_LocationCode'=>$DestinationLocation_LocationCode,
+                'DestinationLocation_CodeContext'=>$DestinationLocation_CodeContext,
+                'Code'=>$Code, 'Quantity'=>$Quantity  // these 2 are arrays
+            );
+        */
+
+        $EchoToken = $Code = $Quantity = $DepartureDateTime = $OriginLocation_LocationCode = $OriginLocation_CodeContext = $DestinationLocation_LocationCode = $DestinationLocation_CodeContext = $Code = $Quantity = '';
+
+        foreach($parameters as $key => $value){
+            $$key = $value;
+        }
+
         $PassengerTypeQuantity = array();
-        $l = count($Code);
+        $l = count($Quantity);
         for ($i = 0; $i < $l; $i++) {
-            $PassengerTypeQuantity[] = array("Code" => $Code[$i], "Quantity" => $Quantity[$i]);
+            $PassengerTypeQuantity[] = array('Code' => $Code[$i], 'Quantity' => $Quantity[$i]);
         }
 
         $AirLowFareSearchRQ = array(
-            "EchoToken" => $EchoToken,
-            "OriginDestinationInformation" => array(
-                "DepartureDateTime" => array("_" => $DepartureDateTime),
-                "OriginLocation" => array(
-                    "LocationCode" => $LocationCodeOrigin,
-                    "CodeContext" => $CodeContextOrigin
+            'EchoToken' => $EchoToken,
+            'OriginDestinationInformation' => array(
+                'DepartureDateTime' => array('_' => $DepartureDateTime),
+                'OriginLocation' => array(
+                    'LocationCode' => $OriginLocation_LocationCode,
+                    'CodeContext'  => $OriginLocation_CodeContext
                 ),
-                "DestinationLocation" => array(
-                    "LocationCode" => $LocationCodeDestination,
-                    "CodeContext" => $CodeContextDestination
+                'DestinationLocation' => array(
+                    'LocationCode' => $DestinationLocation_LocationCode,
+                    'CodeContext'  => $DestinationLocation_CodeContext
                 ),
-            ),
-            "TravelerInfoSummary" => array(
-                "AirTravelerAvail" => array(
-                    "PassengerTypeQuantity" =>  $PassengerTypeQuantity
-                )
             )
         );
 
-        $parameters = array("AirLowFareSearchRQ" => $AirLowFareSearchRQ, "Credentials" => $this->Credentials);
+        $AirLowFareSearchRQ['TravelerInfoSummary']['AirTravelerAvail']['PassengerTypeQuantity'] = $PassengerTypeQuantity;
         try {
-            $response = $client->OTA_AirLowFareSearchRQ($parameters);
+            $response = $client->OTA_AirLowFareSearchRQ(array('AirLowFareSearchRQ' => $AirLowFareSearchRQ, 'Credentials' => $this->Credentials));
         } catch (\Exception $e) {
-            dumpCatch($e, $client, __FUNCTION__ . " in " . __CLASS__ . " at " . __LINE__);
-            return false;
+            dumpCatch($e, $client, "Hey, Shithead " . __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
+            $response = false;
         }
         return $response;
     }
@@ -60,25 +71,27 @@ class Request {
     //  [1] => OTA_AirBookRQResponse OTA_AirBookRQ(OTA_AirBookRQ $parameters)
     public function OTA_AirBookRQ($client, $parameters)
     {
-
+        foreach($parameters as $key => $value){
+            $$key = $value;
+        }
     }
 
     //  [2] => OTA_AirScheduleRQResponse OTA_AirScheduleRQ(OTA_AirScheduleRQ $parameters)
     public function OTA_AirScheduleRQ($client, $EchoToken, $DepartureDateTime, $OriginLocation)
     {
         $AirScheduleRQ = array(
-            "EchoToken"      => $EchoToken,
-            "OriginDestinationInformation" => array(
-                "DepartureDateTime" => array( "_" => $DepartureDateTime),
-                "OriginLocation" => array( "_" => $OriginLocation),
+            'EchoToken' => $EchoToken,
+            'OriginDestinationInformation' => array(
+                'DepartureDateTime' => array( '_' => $DepartureDateTime),
+                'OriginLocation' => array( '_' => $OriginLocation),
             )
         );
 
-        $parameters = array("AirScheduleRQ" => $AirScheduleRQ, "Credentials" => $this->Credentials);
+        $parameters = array('AirScheduleRQ' => $AirScheduleRQ, 'Credentials' => $this->Credentials);
         try {
             $response = $client->OTA_AirScheduleRQ($parameters);
         } catch (\Exception $e) {
-            dumpCatch($e, $client, __FUNCTION__ . " in " . __CLASS__ . " at " . __LINE__);
+            dumpCatch($e, $client, __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
             return false;
         }
         return $response;
@@ -111,43 +124,41 @@ class Request {
     //  [7] => OTA_PkgAvailRQResponse OTA_PkgAvailRQ(OTA_PkgAvailRQ $parameters)
     public function OTA_PkgAvailRQ($client, $PkgAvailRQ)
     {
-        $parameters = array("PkgAvailRQ" => $PkgAvailRQ, "Credentials" => $this->Credentials);
+        $parameters = array('PkgAvailRQ' => $PkgAvailRQ, 'Credentials' => $this->Credentials);
         try {
             $response = $client->OTA_PkgAvailRQ($parameters);
         } catch (\Exception $e) {
-            dumpCatch($e, $client, __FUNCTION__ . " in " . __CLASS__ . " at " . __LINE__);
+            dumpCatch($e, $client, __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
             return false;
         }
         return $response;
     }
 
     //  [7a]
-    public function PackagesSpecificDate($client, $EchoToken, $ID="", $Start="", $Code="", $Quantity="")
+    public function PackagesSpecificDate($client, $EchoToken, $ID='', $Start='', $Code='', $Quantity='')
     {
         $PkgAvailRQ = array(
-            "EchoToken"      => $EchoToken,
-            "PackageRequest" => array(
-                "ID" => $ID,
-                "DateRange" => array(
-                    "Start" => $Start
+            'EchoToken'      => $EchoToken,
+            'PackageRequest' => array(
+                'ID' => $ID,
+                'DateRange' => array(
+                    'Start' => $Start
                 ),
             ),
-            "CustomerCounts" => array(
-                "CustomerCount" => array( "Code"=>$Code, "Quantity"=>$Quantity)
+            'CustomerCounts' => array(
+                'CustomerCount' => array( 'Code'=>$Code, 'Quantity'=>$Quantity)
             )
         );
-        $reply = $this->OTA_PkgAvailRQ($client, $PkgAvailRQ);
-        $reply->Start = $Start;
-        return $reply;
+        return $this->OTA_PkgAvailRQ($client, $PkgAvailRQ);
     }
 
     //  [7b]
-    public function AllPackages($client, $EchoToken="test", $TravelCode="*")
+    public function AllPackages($client, $EchoToken='test', $TravelCode='*')
     {
         $PkgAvailRQ = array(
-            "EchoToken"      => $EchoToken,
-            "PackageRequest" => array(
-                "TravelCode" => $TravelCode
+            'EchoToken'      => $EchoToken,
+            'PackageRequest' => array(
+                'TravelCode' => $TravelCode
             )
         );
         return $this->OTA_PkgAvailRQ($client, $PkgAvailRQ);
@@ -156,7 +167,7 @@ class Request {
     //  [8] => OTA_PkgBookRQResponse OTA_PkgBookRQ(OTA_PkgBookRQ $parameters)
     public function OTA_PkgBookRQ($client, $parameters)
     {
-        $DepartureDateTime = "";
+        $DepartureDateTime = $DepartureAirport_LocationCode = $ArrivalAirport_LocationCode = $FlightNumber = $RPH = array();
         // create the variables from the first dimension, so you get arrays assigned to some of the variables
         foreach($parameters as $key => $value){
             $$key = $value;
@@ -182,15 +193,15 @@ class Request {
 
             $ItineraryItem[$i]['Flight'] = $Flight;
         }
+        if(isset($ItineraryItem))             $PackageRequest['ItineraryItems']['ItineraryItem'] = $ItineraryItem;
 
         if(isset($PackageRequest_ID))         $PackageRequest['ID'] = $PackageRequest_ID;
         if(isset($PackageRequest_TravelCode)) $PackageRequest['TravelCode'] = $PackageRequest_TravelCode;
         if(isset($Start))                     $PackageRequest['DateRange']['Start'] = $Start;
-        if(isset($ItineraryItem))             $PackageRequest['ItineraryItems']['ItineraryItem'] = $ItineraryItem;
 
         $PkgBookRQ = array();
         if(isset($PackageRequest))            $PkgBookRQ['PackageRequest'] = $PackageRequest;
-        if(isset($EchoToken))                 $PkgBookRQ['EchoToken'] = $EchoToken;
+        if(isset($EchoToken))                 $PkgBookRQ['EchoToken']      = $EchoToken;
         if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID'] = $UniqueID_ID;
 
         if(isset($PhoneNumber))               $PkgBookRQ['ContactDetail']['Telephone']['PhoneNumber'] = $PhoneNumber;
@@ -212,13 +223,27 @@ class Request {
             if(isset($Surname[$i]))                $PassengerListItem['Name']['Surname']['_']    = $Surname[$i];
             if(isset($NameTitle[$i]))              $PassengerListItem['Name']['NameTitle']['_']  = $NameTitle[$i];
 
+/*
+    what if there are multiple attributes?
+    or is it multiple tags?
+
+//          $SpecialNeed_Value = array( array('98',     'Shell Fish '), array('97')     );
+//          $SpecialNeed_Code  = array( array('Weight', 'Allergy'    ), array('Weight') );
+
+            <ns:SpecialNeed Code="Weight">97</ns:SpecialNeed>
+            <ns:SpecialNeed Code="Allergy">Shell Fish</ns:SpecialNeed>
+
+ */
+            $SpecialNeed[$i]['Code'] = $SpecialNeed_Code[$i];    // Weight, Allergy
+            $SpecialNeed[$i]['_']    = $SpecialNeed_Value[$i];   // 98,     Shell Fish
+
             if(isset($SpecialNeed_Code[$i] )) {
                 $PassengerListItem['Name']['SpecialNeed'] = array();
                 $j = 0;
                 $SpecialNeed = array();
                 foreach ($SpecialNeed_Code[$i] as $key => $value) {
-                    $SpecialNeed[$j]['Code'] = $key;    // Weight, Allergy
-                    $SpecialNeed[$j++]['_'] = $value;   // 98,     Shell Fish
+                    $SpecialNeed[$j]['Code'] = $SpecialNeed_Attr[$i];    // Weight, Allergy
+                    $SpecialNeed[$j++]['_']  = $SpecialNeed_Code[$i];   // 98,     Shell Fish
                 }
                 $PassengerListItem['Name']['SpecialNeed'] = $SpecialNeed;
             }
@@ -228,11 +253,11 @@ class Request {
 
         $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
 
-        $parameters = array("PkgBookRQ" => $PkgBookRQ, "Credentials" => $this->Credentials);
+        $parameters = array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials);
         try {
             $response = $client->OTA_PkgBookRQ($parameters);
         } catch (\Exception $e) {
-            dumpCatch($e, $client, __FUNCTION__ . " in " . __CLASS__ . " at " . __LINE__);
+            dumpCatch($e, $client, __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
             return false;
         }
         return $response;

@@ -1,57 +1,12 @@
 <?php
 namespace Takeflite {
 
-    function dumpAttributes($prefix, $separator, $data, $newline, $dump = false)
-    {
-        if ($dump) echo "1 ";
-        $eol = ($newline) ? "<br />\r\n" : "";
-        foreach ($data->attributes() as $key => $value) {
-            if ($dump) echo "2 ";
-            echo "{$prefix} {$key}{$separator} {$value} {$eol}";
-        }
-        if ($dump) echo "3 ";
-        if ($dump) {
-            echo "<pre>";
-            print_r($data);
-        }
-    }
 
-    // this is for a simpleXML string
-    function dumpErrors($data)
-    {
-        // ERROR: didn't like the data sent
-        if (isset($data->Errors)) {
-            $error_count = 1;
-            foreach ($data->Errors as $Error) {
-                echo "Error #" . $error_count++ . ": <br />\r\n";
-//print_r($data);
-                dumpAttributes("&nbsp;&nbsp;", " = ", $data->Errors->Error, true);
-            }
-        }
-    }
-
-    // this is for an array
-    function dumpErrorsArray($data)
-    {
-        $msg = '';
-        if (isset($data['Errors'])) {
-            $error_count = 1;
-            foreach ($data['Errors'] as $Error) {
-                $msg .= "Error #" . $error_count++ . ": <br />";
-                foreach ($Error as $key => $detail) {
-                    if (!empty($detail)) {
-                        $msg .= "&nbsp;&nbsp; {$key} = {$detail} <br />";
-                    }
-                }
-            }
-        }
-        return $msg;
-    }
 
     function dumpCatch($e, $soapClient, $location = '')
     {
-        echo "<p><b><u>catch:</u></b> ";
-        echo htmlentities($e->getMessage()) . "<br />\r\n" . $location;
+        echo "<p><b><u>Catch:</u></b> ";
+        echo "<span style='color:yellow;'>" . htmlentities($e->getMessage()) . "</span><br />\r\n" . $location;
         echo "</p>" . PHP_EOL . PHP_EOL;
 
         if ($soapClient instanceof SoapClient) {
@@ -97,31 +52,24 @@ namespace Takeflite {
         }
     }
 
-    function echoThis($array, $indent = -1)
+    function echoThis($string)
     {
-        $indent++;
-
-        if (gettype($array) == "array") {
-            foreach ($array as $key => $value) {
-                $type = gettype($value);
-                switch ($type) {
-                    case "NULL":
-                        break;
-                    case "integer":
-                    case "string":
-                        echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}: $value <br />\r\n";
-                        break;
-                    case "array":
-                        echo str_repeat("&nbsp;&nbsp;", $indent) . "{$key}:<br />\r\n";
-                        echoThis($value, $indent);
-                        break;
-                    default:
-                        echo "$key $value type: $type * <br />\r\n";
-                }
+        $first_character  = true;
+        $msg = '';
+        $previous_letter_uppercase = false;
+        $array = str_split($string);
+        foreach ($array as $c) {
+ //           $uppercase = ord($c)>=65 && ord($c)<=90;
+            if($c === '_'){
+                $msg .= ($first_character) ? '' : ' ';
+            }else{
+                $uppercase = preg_match('~(\p{Lu})~u', $c, $out) ? true : false;
+                $msg .= ($uppercase && !$previous_letter_uppercase && !$first_character) ? ' ' . $c : $c;
+                $previous_letter_uppercase = $uppercase;
             }
-        } else {
-            echo str_repeat("_", $indent) . "$array <br />\r\n";
+            $first_character = false;
         }
+        return $msg;
     }
 
 

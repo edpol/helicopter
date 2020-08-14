@@ -2,12 +2,11 @@
 namespace Takeflite;
 /*
  * all the calls to the api
- * If all the strings in the array are single quote all the tags become lower case
- * with just one exception they keep their case
+ * I manually check the modify date of the WSDL file against my constant, CACHE_LIFETIME
+ * That function is supposed to exist in
  */
 class Api {
     private $opts;
-
 
     public function __construct()
     {
@@ -23,10 +22,9 @@ class Api {
     public function getWsdl()
     {
         // if the folder does not exist, create it
-        if(!is_dir(WSDL_FOLDER)){
-            if(!mkdir(WSDL_FOLDER, 0777, true) && !is_dir(WSDL_FOLDER)){
-                die("Could not create folder " . WSDL_FOLDER . ". Check access permissions. ");
-            }
+        $wsdl_folder = WSDL_FOLDER;
+        if(!mkdir($wsdl_folder, 0777, true) && !is_dir($wsdl_folder)) {
+            die("Could not create folder {$wsdl_folder}. Create manually and grant write access. ");
         }
 
         // find out when the cache was last updated
@@ -45,7 +43,7 @@ class Api {
                 $node = $doc->importNode($node, true);  // import the converted xml can be imported into the empty dom document
                 $doc->appendChild($node);
                 if(@$doc->save(WSDL_FILE)===false) {
-                    die("Could not create file " . WSDL_FILE . ". Check access permissions. ");
+                    die("Could not create file " . WSDL_FILE . ". Check access permissions to folder " . WSDL_FOLDER . '.');
                 }
             } else {
                 die("Could not get file " . WSDL_FILE . ". ");
@@ -56,9 +54,9 @@ class Api {
         return file_exists(WSDL_FILE);
     }
 
-    public function setupHeader($client)
+    public function setupHeader($function)
     {
-        $action_data = "tflite.com/TakeFliteExternalService/TakeFliteOtaService/OTA_PkgAvailRQ";
+        $action_data = "tflite.com/TakeFliteExternalService/TakeFliteOtaService/" . $function;
         $to_data = 'https://apps8.tflite.com/PublicService/Ota.svc';
         $wsa = 'http://www.w3.org/2005/08/addressing';
         $action = new \SoapHeader($wsa, 'Action', $action_data, false);
@@ -66,7 +64,8 @@ class Api {
         return array('Action' => $action, 'To' => $to);
     }
 
-    public function instantiateSoapClient(){
+    // $function is the tflite api function to be called
+    public function instantiateSoapClient($function){
         if($this->getWsdl()) {
             ini_set('soap.wsdl_cache_enabled', '0');
             $params = array(
@@ -79,7 +78,7 @@ class Api {
             $client = null;
             try {
                 $client = new \SoapClient(WSDL_FILE, $params);
-                $headerBody = $this->setupHeader($client);
+                $headerBody = $this->setupHeader($function);
                 $client->__setSoapHeaders($headerBody);
                 return $client;
             } catch (\SoapFault $e) {

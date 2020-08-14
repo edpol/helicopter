@@ -15,12 +15,14 @@ body {
     background-color:#333333;
 }
 
-.label1 {display:inline-block; width:100px;}
+.label1 {margin-left:40px; display:inline-block; width:110px;}
+.label2 {margin-left:40px; display:inline-block; width:230px;}
+.label3 {margin-left:40px; display:inline-block; width:300px;}
 
 .del_up, .del_down, .blue_up, .blue_down, .book_up, .book_down {
     min-width:170px;
     padding:12px 20px;
-    font-size:14px;
+    font-size:18px;
     border-radius:24px;
     color:white;
     border:none;
@@ -41,6 +43,7 @@ body {
 
 .book_up, .book_down {
     text-align: left;
+    font-size:14px;
     font-weight: normal;
     margin: 6px;
     font-family: Consolas, serif;
@@ -53,7 +56,6 @@ body {
     padding:6px 0;
     font-size:11px;
 }
-/* not using
 .greenBox, .whiteBox, .blueBox  {
     float:left;
     padding:20px; border-radius:20px; display: inline-block;
@@ -73,11 +75,11 @@ body {
     background:rgba(180, 180, 255, 0.3);
 }
 
-.blueBox a:link          { color:cyan;    }
-.blueBox a:active        { color:red;     }
-.blueBox a:visited div   { color:yellow; }
-.blueBox a:link:hover,
-.blueBox a:visited:hover { color:green;   }
+a:link          { color:cyan;    }
+a:active        { color:red;     }
+a:visited       { color:magenta;  }
+a:link:hover,
+a:visited:hover { color:lightgreen; }
 
 .button {
     background-color: #4CAF50;
@@ -91,5 +93,3 @@ body {
     margin: 4px 2px;
     cursor: pointer;
 }
-
- */

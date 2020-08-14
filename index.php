@@ -8,7 +8,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$api = $consume = null;
 require_once('initialize.php');
 
 ?>
@@ -36,13 +35,13 @@ require_once('initialize.php');
             </p>
             <p>
                 <label for="quantity"   class="label1">Quantity</label>
-                <input type="number" name="Quantity"   id="quantity" value="1" />
+                <input type="number" name="Quantity" min="1" id="quantity" value="1" />
             </p>
             <input type="hidden" name="EchoToken"  value="test" />
             <input type="hidden" name="ID"   value="128257" />
             <input type="hidden" name="Code" value="ADT" />
             <p>
-                <input style="font-size:18px; text-align:center; " type="submit" name="submit" value="submit" class="blue_up" />
+                <input type="submit" name="submit" value="submit" class="blue_up" />
             </p>
         </form>
 <script type="text/javascript" src="mysrc.js"></script>
