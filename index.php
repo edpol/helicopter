@@ -44,6 +44,6 @@ require_once('initialize.php');
                 <input type="submit" name="submit" value="submit" class="blue_up" />
             </p>
         </form>
-<script type="text/javascript" src="mysrc.js"></script>
+        <script type="text/javascript" src="mysrc.js"></script>
     </body>
 </html>

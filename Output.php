@@ -4,9 +4,25 @@ Namespace Takeflite;
 class Output {
 
     public function printList($response, $output_format=''){
-        if($output_format === "AllPackages") { $msg = $this->printAllPkgs($response); }
+        if    ($output_format === "AllPackages"         ) { $msg = $this->printAllPkgs($response); }
         elseif($output_format === "PackagesSpecificDate") { $msg = $this->printPkgList($response); }
+        elseif($output_format === "OTA_PkgBookRQResult" ) { $msg = $this->OTA_PkgBookRQResult($response);}
         else { die("Problem selecting report"); }
+        return $msg;
+    }
+
+    private function OTA_PkgBookRQResult($response){
+        $array = json_decode(json_encode($response->OTA_PkgBookRQResult), true);
+        $msg  = "<div id='wrapper'>\r\n";
+        $msg .= "<p>\r\n";
+        $msg .= "Type:        " . $array['PackageReservation']['UniqueID']['Type'] . "<br />";
+        $msg .= "ID:          " . $array['PackageReservation']['UniqueID']['ID']   . "<br />";
+        $msg .= "ID Context:  " . $array['PackageReservation']['UniqueID']['ID_Context'] . "<br />";
+        $msg .= "Token:       " . $array['EchoToken'] . "<br />";
+        $msg .= "TimeStamp:   " . $array['TimeStamp'] . "<br />";
+        $msg .= "Version:     " . $array['Version']   . "<br />";
+        $msg .= "</p>\r\n";
+        $msg .= "<hr>";
         return $msg;
     }
 
@@ -140,73 +156,6 @@ class Output {
             foreach ($data->Errors as $Error) {
                 $msg .= "Error #" . $error_count++ . ": <br />\r\n";
                 $msg .= $this->dumpAttributes("&nbsp;&nbsp;", " = ", $data->Errors->Error, true);
-            }
-        }
-        return $msg;
-    }
-
-    // this is for an array
-    public function dumpErrorsArray($data)
-    {
-        if(is_bool($data)){
-            $msg = ($data) ? 'TRUE ' : 'FALSE ';
-        }else{
-            $msg = '';
-            if (isset($data['Errors'])) {
-                $error_count = 1;
-                foreach ($data['Errors'] as $Error) {
-                    $msg .= "Error #" . $error_count++ . ": <br />";
-                    foreach ($Error as $key => $detail) {
-                        if (!empty($detail)) {
-                            $msg .= "&nbsp;&nbsp; {$key} = {$detail} <br />";
-                        }
-                    }
-                }
-            }
-        }
-        return $msg;
-    }
-
-    public function dumpCatch($e, $soapClient, $location = '')
-    {
-        $msg  = "<p><b><u>Catch:</u></b> ";
-        $msg .= "<span style='color:yellow;'>" . htmlentities($e->getMessage()) . "</span><br />\r\n" . $location;
-        $msg .= "</p>" . PHP_EOL . PHP_EOL;
-
-        $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
-
-        if ($soapClient instanceof \SoapClient) {
-            $array = ['__getLastRequest', '__getLastResponse', '__getLastRequestHeaders', '__getLastResponseHeaders'];
-            foreach ($array as $method) {
-                $msg .= "<p>";
-                $msg .= "<b><u>{$method}:</u></b> <br />" . PHP_EOL;
-                $string = htmlentities($soapClient->$method());
-
-                $tmp = str_replace(
-                    array('xmlns:',             PHP_EOL . '&lt;env:Envelope', '&gt;&lt;'),
-                    array("~~{$indent}xmlns:", "~~&lt;env:Envelope",          "&gt;~~&lt;"),
-                    $string);
-                $output = explode("~~", $tmp);
-
-                $count = 0;
-                $limit = count($output);
-                $msg .= $output[0] . "<br />";
-                for ($i = 1; $i < $limit; $i++) {
-                    // if the line starts with '</' then we indent less
-                    $this_line_ends_with = substr($output[$i], 0, 5);
-                    $found_closing_tag_above = (strripos($output[$i - 1], '&lt;/', 0) !== false || strripos($output[$i - 1], '?&gt;', 0) !== false);
-
-                    if($this_line_ends_with === '&lt;/') {
-                        if($count > 0) {$count--;}
-                    } elseif(substr($output[$i - 1], -5) !== '/&gt;') {
-                        if( (substr($output[$i - 1], -4) ===  '&gt;') && !$found_closing_tag_above ) {
-                            $count++;
-                        }
-                    }
-                    $indent = str_repeat($indent, ($count > 0) ? $count : 0);
-                    $msg .= $indent . $output[$i] . "<br />";
-                }
-                $msg .= "</p>" . PHP_EOL . PHP_EOL;
             }
         }
         return $msg;

@@ -167,11 +167,19 @@ class Request {
     //  [8] => OTA_PkgBookRQResponse OTA_PkgBookRQ(OTA_PkgBookRQ $parameters)
     public function OTA_PkgBookRQ($client, $parameters)
     {
-        $DepartureDateTime = $DepartureAirport_LocationCode = $ArrivalAirport_LocationCode = $FlightNumber = $RPH = array();
+        $DepartureDateTime = $DepartureAirport_LocationCode = $ArrivalAirport_LocationCode = $FlightNumber = $RPH = $PassengerListItem_Quantity = $SpecialNeed = $PaymentType = array();
         // create the variables from the first dimension, so you get arrays assigned to some of the variables
         foreach($parameters as $key => $value){
             $$key = $value;
         }
+
+        $PkgBookRQ = array();
+        if(isset($EchoToken))                 $PkgBookRQ['EchoToken']      = $EchoToken;
+        if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID'] = $UniqueID_ID;
+        if(isset($PackageRequest_ID))         $PackageRequest['ID'] = $PackageRequest_ID;
+        if(isset($PackageRequest_TravelCode)) $PackageRequest['TravelCode'] = $PackageRequest_TravelCode;
+        if(isset($Start))                     $PackageRequest['DateRange']['Start'] = $Start;
+
 
         $Flight_attributes = array('DepartureDateTime', 'ArrivalDateTime', 'TravelCode', 'Duration', 'CheckInDate');
         $l = count($DepartureDateTime); // if there is a Flight there must be a departure time?
@@ -195,14 +203,7 @@ class Request {
         }
         if(isset($ItineraryItem))             $PackageRequest['ItineraryItems']['ItineraryItem'] = $ItineraryItem;
 
-        if(isset($PackageRequest_ID))         $PackageRequest['ID'] = $PackageRequest_ID;
-        if(isset($PackageRequest_TravelCode)) $PackageRequest['TravelCode'] = $PackageRequest_TravelCode;
-        if(isset($Start))                     $PackageRequest['DateRange']['Start'] = $Start;
-
-        $PkgBookRQ = array();
         if(isset($PackageRequest))            $PkgBookRQ['PackageRequest'] = $PackageRequest;
-        if(isset($EchoToken))                 $PkgBookRQ['EchoToken']      = $EchoToken;
-        if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID'] = $UniqueID_ID;
 
         if(isset($PhoneNumber))               $PkgBookRQ['ContactDetail']['Telephone']['PhoneNumber'] = $PhoneNumber;
         if(isset($Address))                   $PkgBookRQ['ContactDetail']['Address']['_'] = $Address;
@@ -216,46 +217,23 @@ class Request {
             if(isset($Gender[$i]))                 $PassengerListItem['Gender']      = $Gender[$i];
             if(isset($PassengerListItem_Code[$i])) $PassengerListItem['Code']        = $PassengerListItem_Code[$i];
             if(isset($CodeContext[$i]))            $PassengerListItem['CodeContext'] = $CodeContext[$i];
-            if(isset($CodeContext[$i]))            $PassengerListItem['Quantity']    = $Quantity[$i];
+            if(isset($CodeContext[$i]))            $PassengerListItem['Quantity']    = $PassengerListItem_Quantity[$i];
 
             if(isset($GivenName[$i]))              $PassengerListItem['Name']['GivenName']['_']  = $GivenName[$i];
             if(isset($MiddleName[$i]))             $PassengerListItem['Name']['MiddleName']['_'] = $MiddleName[$i];
             if(isset($Surname[$i]))                $PassengerListItem['Name']['Surname']['_']    = $Surname[$i];
             if(isset($NameTitle[$i]))              $PassengerListItem['Name']['NameTitle']['_']  = $NameTitle[$i];
 
-/*
-    what if there are multiple attributes?
-    or is it multiple tags?
-
-//          $SpecialNeed_Value = array( array('98',     'Shell Fish '), array('97')     );
-//          $SpecialNeed_Code  = array( array('Weight', 'Allergy'    ), array('Weight') );
-
-            <ns:SpecialNeed Code="Weight">97</ns:SpecialNeed>
-            <ns:SpecialNeed Code="Allergy">Shell Fish</ns:SpecialNeed>
-
- */
-            $SpecialNeed[$i]['Code'] = $SpecialNeed_Code[$i];    // Weight, Allergy
-            $SpecialNeed[$i]['_']    = $SpecialNeed_Value[$i];   // 98,     Shell Fish
-
-            if(isset($SpecialNeed_Code[$i] )) {
-                $PassengerListItem['Name']['SpecialNeed'] = array();
-                $j = 0;
-                $SpecialNeed = array();
-                foreach ($SpecialNeed_Code[$i] as $key => $value) {
-                    $SpecialNeed[$j]['Code'] = $SpecialNeed_Attr[$i];    // Weight, Allergy
-                    $SpecialNeed[$j++]['_']  = $SpecialNeed_Code[$i];   // 98,     Shell Fish
-                }
-                $PassengerListItem['Name']['SpecialNeed'] = $SpecialNeed;
-            }
+            $PassengerListItem['Name']['SpecialNeed'] = $SpecialNeed[$i];
 
             $PkgBookRQ['PassengerListItems']['PassengerListItem'][$k++] = $PassengerListItem;
         }
 
         $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
 
-        $parameters = array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials);
+
         try {
-            $response = $client->OTA_PkgBookRQ($parameters);
+            $response = $client->OTA_PkgBookRQ(array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials));
         } catch (\Exception $e) {
             dumpCatch($e, $client, __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
             return false;

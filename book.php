@@ -34,10 +34,19 @@ $parameters = $_POST;
 
 try {
     $response = $request->OTA_PkgBookRQ($client, $parameters);
-    if(isset($response->OTA_AirLowFareSearchRQ->Success)) {
-        echo $output->printList($response);
+echo "<br><pre>";
+print_r($response);
+
+if(isset($response->Warnings))          { print_r($response->Warnings);          }    // WarningsType
+if(isset($response->Success))           { print_r($response->Success);           }    // SuccessType
+if(isset($response->Errors))            { print_r($response->Errors);            }    // ErrorsType
+if(isset($response->TPA_Extensions))    { print_r($response->TPA_Extensions);    }    // TPA_ExtensionsType
+if(isset($response->PackageReservation)){ print_r($response->PackageReservation);}    // PkgReservation
+
+    if(isset($response->OTA_PkgBookRQResult->Success)) {
+        echo $output->printList($response, 'OTA_PkgBookRQResult');
     }else{
-        echo $output->dumpErrors($response->OTA_PkgBookRQResponse);
+        echo $output->dumpErrors($response->OTA_PkgBookRQResult);
     }
 
 } catch (\Exception $e) {

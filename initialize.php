@@ -1,6 +1,8 @@
 <?php
 namespace Takeflite;
 
+date_default_timezone_set ('America/New_York');
+
 defined('DS')             ? null : define('DS', DIRECTORY_SEPARATOR);
 defined('LIB_PATH')       ? null : define('LIB_PATH', __DIR__);
 defined('CACHE_LIFETIME') ? null : define('CACHE_LIFETIME', 60 * 60 * 24 * 7); // 7 days

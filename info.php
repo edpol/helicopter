@@ -18,25 +18,27 @@ extract($_POST, EXTR_OVERWRITE);
 
 $array = json_decode(json_encode($_POST), true);
 
-
 // Delete this when Live
 $array['UniqueID_ID'] = 'reference';
 $PhoneNumber = '1234567890';
-$Email = 'person@example';
+$Email = 'person@example.com';
 $array['PaymentType'] = "34";
-$SpecialNeed_Value      = array(
-                            array('98',     'Shell Fish'),
-                            array('97')
-                          );
-$SpecialNeed_Code       = array(
-                            array('Weight', 'Allergy'),
-                            array('Weight')
-                          );
+$SpecialNeed =
+    array(
+        array(
+            array("Code"=>"Weight" , '_'=>98),
+            array("Code"=>"Allergy", '_'=>'Peanuts')
+        ),
+        array(
+            array('Code'=>'Weight', '_'=>97)
+        )
+    );
 $Gender                 = array('Male' , 'Female');
 $PassengerListItem_Code = array('ADT'  , 'ADT');
 $CodeContext            = array('AQT'  , 'AQT');
 $GivenName              = array('John' ,'Jane');
 $Surname                = array('Doe'  , 'Doe');
+$PassengerListItem_Quantity = array('1'    , '1'  );
 //Delete this when live
 
 
@@ -45,7 +47,7 @@ $string_list = array("PhoneNumber", "Address", "Email");
 foreach($string_list as $value){
     if(!isset($$value)) {$$value = '';}
 }
-$array_list = array('Gender', 'PassengerListItem_Code', 'CodeContext', 'GivenName', 'MiddleName', 'Surname', 'NameTitle');
+$array_list = array('Gender', 'PassengerListItem_Code', 'CodeContext', 'GivenName', 'MiddleName', 'Surname', 'NameTitle', 'PassengerListItem_Quantity');
 foreach($array_list as $value){
     if(!isset($$value)) {$$value = array();}
 }
@@ -63,7 +65,7 @@ foreach($array_list as $value){
 </head>
 <body>
 
-    <form action='book.php' method="post">
+<form action='book.php' method="post">
 <?php
 
 //print "<pre>"; print_r($array); print "</pre>\r\n";
@@ -74,7 +76,7 @@ foreach($array_list as $value){
     $list = array('EchoToken', 'UniqueID_ID', 'PackageRequest_ID', 'PackageRequest_TravelCode', 'Start', 'PaymentType', 'Quantity');
     foreach($list as $value){
         if(isset($array[$value])) {
-            echo echoThis($value) . ": $array[$value] <br>\r\n ";
+            echo "\t" . echoThis($value) . ": $array[$value] <br>\r\n";
             echo "\t<input type='hidden' name='{$value}' value='{$array[$value]}' />\r\n";
         }
     }
@@ -94,12 +96,10 @@ foreach($array_list as $value){
     }
     for($i=0; $i<$largest_count; $i++){
         foreach($flight_list as $value) {
-            echo "<label class='label3'>";
-            echo "\t<input type='hidden' name='{$value}[]' value='{$array[$value][$i]}' />\r\n";
-            echo echoThis($value) . "[{$i}]: ";
-            echo "</label>";
+            echo "\t<span class='label3'>" . echoThis($value) . "[{$i}]: </span>";
+            echo "\t<input type='hidden' name='{$value}[]' value='{$array[$value][$i]}' />\r\n\t";
             print_r($array[$value][$i]);
-            echo "<br>\r\n ";
+            echo "\t<br>\r\n ";
         }
     }
 
@@ -114,9 +114,9 @@ foreach($array_list as $value){
      *  here we input the Contact information, <ContactDetail>
      */
     $ContactDetail = array('PhoneNumber'=>$PhoneNumber, 'Address'=>$Address, 'Email'=>$Email);
-    echo "<br>\r\nContact Detail: <br>\r\n";
+    echo "\r\n\t<br>\r\n\tContact Detail: <br>\r\n";
     foreach($ContactDetail as $key => $value){
-        echo "<p><label class='label2' for='{$key}'>" . echoThis($key) . ": </label>";
+        echo "\t<p><label class='label2' for='{$key}'>" . echoThis($key) . ": </label>";
         echo "<input id='{$key}' type='text' name='{$key}' value='{$value}' /></p>\r\n";
     }
 // allow add another phone number or address or email
@@ -124,28 +124,29 @@ foreach($array_list as $value){
     /*************************************************************
      *  here we input the person information, <PassengerListItem>
      */
-    $PassengerListItem_list = array('PassengerListItem_Code'=>$PassengerListItem_Code, 'Gender'=>$Gender, 'CodeContext'=>$CodeContext, 'GivenName'=>$GivenName, 'MiddleName'=>$MiddleName, 'Surname'=>$Surname, 'NameTitle'=>$NameTitle);
+    $PassengerListItem_list = array('PassengerListItem_Code'=>$PassengerListItem_Code, 'Gender'=>$Gender, 'CodeContext'=>$CodeContext, 'GivenName'=>$GivenName, 'MiddleName'=>$MiddleName, 'Surname'=>$Surname, 'NameTitle'=>$NameTitle, 'PassengerListItem_Quantity'=>$PassengerListItem_Quantity);
     $Genders_list = array("Male", "Female", "Unknown", "Male_NoShare", "Female_NoShare");
-    echo "<form action='book.php' method='POST'>\r\n";
 
     $Quantity = $array['Quantity'];
     for($i=0; $i<$Quantity; $i++) {
-        echo "<br>\r\n";
+        echo "\t<br>\r\n";
         $RPH = $i+1;
-        echo "<p>RPH: $RPH</p>\r\n";
-        echo "<input id='RPH' type='hidden' name='RPH[]' value='{$RPH}' /></p>\r\n";
+        echo "\r\n\t<p>RPH: $RPH</p>\r\n";
+        echo "\t<input id='RPH' type='hidden' name='RPH[]' value='{$RPH}' />\r\n";
 
         $passenger_gender = $PassengerListItem_list['Gender'][$i];
-        echo "<p><label class='label2' for='Gender'>Gender: </label><input list='Genders' name='Gender[]' id='Gender' value='{$passenger_gender}'>";
-        echo "<datalist id='Genders'>";
+        echo "\t<p>\r\n\t\t<label class='label2' for='Gender'>Gender: </label><input list='Genders' name='Gender[]' id='Gender' value='{$passenger_gender}'>\r\n";
+        echo "\t\t<datalist id='Genders'>\r\n";
         foreach ($Genders_list as $value) {
-            echo "<option value='{$value}'>";
+            echo "\t\t\t<option value='{$value}'>\r\n";
         }
-        echo "</datalist></p>";
+        echo "\t\t</datalist>\r\n\t</p>\r\n";
 
         foreach ($PassengerListItem_list as $key => $value) {
             if(isset($value[$i]) && $key !== "Gender") {
-                echo "<p><label class='label2' for='{$key}'>" . echoThis($key) . ": </label>";
+                echo "\t<p><label class='label2' for='{$key}'>";
+                echo ($key==='PassengerListItem_Quantity') ? 'Quantity' : echoThis($key);
+                echo ": </label>";
                 echo "<input id='{$key}' type='text' name='{$key}[]' value='{$value[$i]}' /></p>\r\n";
             }
         }
@@ -154,22 +155,35 @@ foreach($array_list as $value){
 //        $SpecialNeed_Code  = array( array('Weight', 'Allergy'    ), array('Weight') );
 //        on the others page, what do i do with name Weight[]??
 //        need to save weight as hidden value and the number for weight as another value
-        $target_code  = $SpecialNeed_Code[$i];
-        $target_value = $SpecialNeed_Value[$i];
-        $count = count($SpecialNeed_Code[$i]);
-        for($j=0; $j<$count; $j++){
-            echo "<p>";
-            echo "<label class='label2' for='SpecialNeed_Code'>"  . echoThis('SpecialNeed_Code')  . ": </label>";
-            echo "<input id='SpecialNeed_Code'  type='text' name='SpecialNeed_Code[]'  value='{$target_code[$j]}' /> ";
-            echo "<label class='label2' for='SpecialNeed_Value'>" . echoThis('SpecialNeed_Value') . ": </label>";
-            echo "<input id='SpecialNeed_Value' type='text' name='SpecialNeed_Value[]' value='{$target_value[$j]}' />";
-            echo "</p>\r\n";
+
+        $j = 0;
+        foreach($SpecialNeed[$i] as $element){
+
+            echo "\t<p>\r\n";
+            $SpecialNeed_list = array('Code', '_');
+            foreach($SpecialNeed_list as $key => $target){
+                echo "\t\t<label class='label2' for='SpecialNeed{$i}{$j}{$target}'>Special Need: </label>";
+                echo "<input id='SpecialNeed{$i}{$j}{$target}'  type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
+            }
+            echo "\t</p>\r\n";
+
+//            $target = 'Code';
+//            echo "\t<p>\r\n";
+//            echo "\t\t<label class='label2' for='SpecialNeed_Code'>"  . echoThis('SpecialNeed_Code')  . ": </label>";
+//            echo "<input id='SpecialNeed_Code'  type='text' name='SpecialNeed[$i][$j][$target]'  value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
+//
+//            $target = '_';
+//            echo "\t\t<label class='label2' for='SpecialNeed_Value'>" . echoThis('SpecialNeed_Value') . ": </label>";
+//            echo "<input id='SpecialNeed_Value' type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
+//            echo "\t</p>\r\n";
+
+            $j++;
         }
 
     }
 
-    echo "<button class='blue_up' type='Submit'>Book</button>";
-    echo "</form>";
+    echo "<button class='blue_up' type='Submit'>Book</button>\r\n";
+    echo "</form>\r\n";
 ?>
     <script type="text/javascript" src="mysrc.js"></script>
 </body>

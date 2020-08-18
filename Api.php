@@ -23,8 +23,10 @@ class Api {
     {
         // if the folder does not exist, create it
         $wsdl_folder = WSDL_FOLDER;
-        if(!mkdir($wsdl_folder, 0777, true) && !is_dir($wsdl_folder)) {
-            die("Could not create folder {$wsdl_folder}. Create manually and grant write access. ");
+        if(!is_dir($wsdl_folder)) {
+            if(!mkdir($wsdl_folder, 0777, true)) {
+                die("Could not create folder {$wsdl_folder}. Create manually and grant write access. ");
+            }
         }
 
         // find out when the cache was last updated

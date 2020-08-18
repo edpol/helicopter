@@ -1,8 +1,6 @@
 <?php
 namespace Takeflite {
 
-
-
     function dumpCatch($e, $soapClient, $location = '')
     {
         echo "<p><b><u>Catch:</u></b> ";
@@ -16,12 +14,12 @@ namespace Takeflite {
                 echo "<p>";
                 echo "<b><u>{$method}:</u></b> <br />" . PHP_EOL;
                 $string = htmlentities($soapClient->$method());
-//echo $string . "<br>\r\n";
-                $tmp = str_replace('xmlns:', "~~&nbsp;&nbsp;&nbsp;&nbsp;xmlns:", $string);
-                $tmp = str_replace(PHP_EOL . '&lt;env:Envelope', "~~&lt;env:Envelope", $tmp);
-                $tmp = str_replace('&gt;&lt;', "&gt;~~&lt;", $tmp);
+
+                $tmp = str_replace(
+                    array('xmlns:', PHP_EOL . '&lt;env:Envelope', '&gt;&lt;'),
+                    array("~~&nbsp;&nbsp;&nbsp;&nbsp;xmlns:", "~~&lt;env:Envelope", "&gt;~~&lt;"),
+                    $string);
                 $output = explode("~~", $tmp);
-//print_r($output);
 
                 $count = 0;
                 $limit = count($output);
@@ -31,18 +29,16 @@ namespace Takeflite {
                     $this_line_ends_with = substr($output[$i], 0, 5);
                     $found_closing_tag_above = (strripos($output[$i - 1], '&lt;/', 0) !== false || strripos($output[$i - 1], '?&gt;', 0) !== false);
 
-                    if ($this_line_ends_with == '&lt;/') {
-                        if ($count > 0) $count--;
-                    } elseif (substr($output[$i - 1], -5) != '/&gt;') {
-                        if (substr($output[$i - 1], -4) == '&gt;')
-                            if (!$found_closing_tag_above) $count++;
+                    if ($this_line_ends_with === '&lt;/') {
+                        if ($count > 0) {
+                            $count--;
+                        }
+                    } elseif (substr($output[$i - 1], -5) !== '/&gt;') {
+                        if   (substr($output[$i - 1], -4) ===  '&gt;' && !$found_closing_tag_above) {
+                            $count++;
+                        }
                     }
-//echo substr($output[$i-1],-5) . "<br />\r\n";
-//echo  $this_line_ends_with . "<br />\r\n";
-//echo ($found_closing_tag_above) ? "Found Closing Tag " : "NO CLOSING TAG ";
-//echo " - " .  strripos(trim($output[$i-1]),'&lt;/', 0);
-//echo " - " .  $output[$i-1];
-//echo "<br>" . $count . "<br>\r\n";
+
                     $indent = str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;", ($count > 0) ? $count : 0);
                     echo $indent . $output[$i] . "<br />";
                 }
@@ -50,6 +46,28 @@ namespace Takeflite {
                 echo "</p>" . PHP_EOL . PHP_EOL;
             }
         }
+    }
+
+    // this is for an array
+    function dumpErrorsArray($data)
+    {
+        if(is_bool($data)){
+            $msg = ($data) ? 'TRUE ' : 'FALSE ';
+        }else{
+            $msg = '';
+            if (isset($data['Errors'])) {
+                $error_count = 1;
+                foreach ($data['Errors'] as $Error) {
+                    $msg .= "Error #" . $error_count++ . ": <br />";
+                    foreach ($Error as $key => $detail) {
+                        if (!empty($detail)) {
+                            $msg .= "&nbsp;&nbsp; {$key} = {$detail} <br />";
+                        }
+                    }
+                }
+            }
+        }
+        return $msg;
     }
 
     function echoThis($string)
