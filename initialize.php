@@ -36,3 +36,5 @@ require_once(LIB_PATH.DS.'Output.php');
 $output = new Output();
 
 require_once(LIB_PATH.DS.'functions.php');
+
+session_start();

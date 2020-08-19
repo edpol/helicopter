@@ -1,14 +1,9 @@
 <?php
 namespace Takeflite;
 
-/*
- * XML calls that support gave us
- */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+include('error_reporting.php');
 require_once('initialize.php');
+$_SESSION['time']['index_initialized'] = time();
 
 ?>
 <!DOCTYPE html>

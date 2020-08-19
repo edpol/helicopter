@@ -34,7 +34,7 @@ namespace Takeflite {
                             $count--;
                         }
                     } elseif (substr($output[$i - 1], -5) !== '/&gt;') {
-                        if   (substr($output[$i - 1], -4) ===  '&gt;' && !$found_closing_tag_above) {
+                        if (substr($output[$i - 1], -4) === '&gt;' && !$found_closing_tag_above) {
                             $count++;
                         }
                     }
@@ -51,9 +51,9 @@ namespace Takeflite {
     // this is for an array
     function dumpErrorsArray($data)
     {
-        if(is_bool($data)){
+        if (is_bool($data)) {
             $msg = ($data) ? 'TRUE ' : 'FALSE ';
-        }else{
+        } else {
             $msg = '';
             if (isset($data['Errors'])) {
                 $error_count = 1;
@@ -72,15 +72,15 @@ namespace Takeflite {
 
     function echoThis($string)
     {
-        $first_character  = true;
+        $first_character = true;
         $msg = '';
         $previous_letter_uppercase = false;
         $array = str_split($string);
         foreach ($array as $c) {
- //           $uppercase = ord($c)>=65 && ord($c)<=90;
-            if($c === '_'){
+            //           $uppercase = ord($c)>=65 && ord($c)<=90;
+            if ($c === '_') {
                 $msg .= ($first_character) ? '' : ' ';
-            }else{
+            } else {
                 $uppercase = preg_match('~(\p{Lu})~u', $c, $out) ? true : false;
                 $msg .= ($uppercase && !$previous_letter_uppercase && !$first_character) ? ' ' . $c : $c;
                 $previous_letter_uppercase = $uppercase;
@@ -90,5 +90,14 @@ namespace Takeflite {
         return $msg;
     }
 
+    function dumpTimeStamps($time)
+    {
+        $previous = array_kshift($time);
+        echo '<span class="label3">' . $loc . '</span>' . date(' Y-m-d H:m:s ', $stamp) . ($stamp - $previous) . '<br>';
+        foreach ($time as $loc => $stamp) {
+            echo '<span class="label3">' . $loc . '</span>' . date(' Y-m-d H:m:s ', $stamp) . ($stamp - $previous) . '<br>';
+            $previous = $stamp;
+        }
+    }
 
 }

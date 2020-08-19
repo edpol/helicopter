@@ -1,0 +1,12 @@
+
+1 - Tfilte said that our client Helicopter Tours takes care of the payment 
+    so the API only uses payment method 34.  
+    This means we can't refund going through the API.
+
+2 - They also said that the API cannot cancel an order, that the client has to call in.
+    (attach email)
+
+3 - The API reponse time is slow but I don't think it's a deal breaker.
+
+
+ 

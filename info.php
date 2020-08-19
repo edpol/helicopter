@@ -2,14 +2,15 @@
 namespace Takeflite;
 
 /*
- *  so now the user needs to input some ContactDetail, PassengerListItems, PaymentDetails information
+ *  This page builds the input page depending on previous choices.
+ *  The user needs to input some ContactDetail, PassengerListItems,
+ *  According to Tfilte, Helicopter Tours takes care of payment method, so we always set PaymentDetails = 34
  *  then we can call OTA_PkgBookRQ to book it, and save to a cookie
  */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+include('error_reporting.php');
 
 require_once('initialize.php');
+$_SESSION['time']['info_initialized'] = time();
 
 if(!isset($_POST['Start'])){
     die('Missing Data in ' . __FILE__);
@@ -151,14 +152,14 @@ foreach($array_list as $value){
             }
         }
 
-//        $SpecialNeed_Value = array( array('98',     'Shell Fish '), array('97')     );
-//        $SpecialNeed_Code  = array( array('Weight', 'Allergy'    ), array('Weight') );
-//        on the others page, what do i do with name Weight[]??
-//        need to save weight as hidden value and the number for weight as another value
-
+/*
+$SpecialNeed = array( array( ['Code'=>'Weight', '_'=>98],           // customer 0, special need #1
+                             ['Code'=>'Allergy', '_'=>'Peanuts'] ), // customer 0, special need #2
+                      array( ['Code'=>'Weight', '_'=>97] )          // customer 1, special need #1
+               );
+*/
         $j = 0;
         foreach($SpecialNeed[$i] as $element){
-
             echo "\t<p>\r\n";
             $SpecialNeed_list = array('Code', '_');
             foreach($SpecialNeed_list as $key => $target){
@@ -166,17 +167,6 @@ foreach($array_list as $value){
                 echo "<input id='SpecialNeed{$i}{$j}{$target}'  type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
             }
             echo "\t</p>\r\n";
-
-//            $target = 'Code';
-//            echo "\t<p>\r\n";
-//            echo "\t\t<label class='label2' for='SpecialNeed_Code'>"  . echoThis('SpecialNeed_Code')  . ": </label>";
-//            echo "<input id='SpecialNeed_Code'  type='text' name='SpecialNeed[$i][$j][$target]'  value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
-//
-//            $target = '_';
-//            echo "\t\t<label class='label2' for='SpecialNeed_Value'>" . echoThis('SpecialNeed_Value') . ": </label>";
-//            echo "<input id='SpecialNeed_Value' type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
-//            echo "\t</p>\r\n";
-
             $j++;
         }
 
@@ -188,49 +178,3 @@ foreach($array_list as $value){
     <script type="text/javascript" src="mysrc.js"></script>
 </body>
 </html>
-<?php
-/*
-EchoToken="test"
-UniqueID_ID="reference"
-PackageRequest_ID="128257"
-TravelCode="Dog Sled Tour"
-Start="2021-05-10T13:05:00"
-ItineraryItem[0]
-    DepartureDateTime="2021-05-10T13:05:00"
-    ArrivalDateTime="2021-05-10T14:42:00"
-    TravelCode="126402,126477"
-    Duration="97"
-    CheckInDate="2021-05-10T12:35:00"
-// can you have multiple flights in one itinerary
-    DepartureAirport_LocationCode="Juneau Airport"
-    ArrivalAirport_LocationCode="Juneau Airport"
-    FlightNumber="DS1305,DR1430"
-
-// can you have multiple ContactDetail tags
-PhoneNumber="123456789x"
-Address
-Email person@example.com
-PassengerListItem[0]
-    RPH="1"
-    Gender="Unknown"
-    Code="ADT"
-    CodeContext="AQT"
-    Quantity="1"
-    GivenName=John
-    MiddleName
-    Surname Doe
-    NameTitle
-    SpecialNeed_Code= array("Weight"=>98)
-PassengerListItem[1]
-    RPH="2"
-    Gender="Unknown"
-    Code="ADT"
-    CodeContext="AQT"
-    Quantity="1"
-    GivenName=Jane
-    MiddleName
-    Surname Doe
-    NameTitle
-    SpecialNeed_Code= array("Weight"=>97)
-PaymentType="34"
-*/

@@ -231,9 +231,13 @@ class Request {
 
         $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
 
+        $parameters = array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials);
+        
+print "<pre>"; print_r($parameters);
+return "Exit ";
 
         try {
-            $response = $client->OTA_PkgBookRQ(array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials));
+            $response = $client->OTA_PkgBookRQ($parameters);
         } catch (\Exception $e) {
             dumpCatch($e, $client, __FUNCTION__ . ' in ' . __CLASS__ . ' at ' . __LINE__);
             return false;
