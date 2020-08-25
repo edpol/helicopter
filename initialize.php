@@ -1,6 +1,8 @@
 <?php
 namespace Takeflite;
 
+session_start();
+
 date_default_timezone_set ('America/New_York');
 
 defined('DS')             ? null : define('DS', DIRECTORY_SEPARATOR);
@@ -37,4 +39,3 @@ $output = new Output();
 
 require_once(LIB_PATH.DS.'functions.php');
 
-session_start();

@@ -21,8 +21,8 @@ $array = json_decode(json_encode($_POST), true);
 
 // Delete this when Live
 $array['UniqueID_ID'] = 'reference';
-$PhoneNumber = '1234567890';
-$Email = 'person@example.com';
+$PhoneNumber = array('1234567890', '3052155503');
+$Email = array('person@example.com', 'epol@shoreex.com');
 $array['PaymentType'] = "34";
 $SpecialNeed =
     array(
@@ -43,12 +43,8 @@ $PassengerListItem_Quantity = array('1'    , '1'  );
 //Delete this when live
 
 
-// Initialize variables to empty if not defined above
-$string_list = array("PhoneNumber", "Address", "Email");
-foreach($string_list as $value){
-    if(!isset($$value)) {$$value = '';}
-}
-$array_list = array('Gender', 'PassengerListItem_Code', 'CodeContext', 'GivenName', 'MiddleName', 'Surname', 'NameTitle', 'PassengerListItem_Quantity');
+// Initialize variable arrays to empty if not defined above
+$array_list = array('PhoneNumber', 'Address', 'Email', 'Gender', 'PassengerListItem_Code', 'CodeContext', 'GivenName', 'MiddleName', 'Surname', 'NameTitle', 'PassengerListItem_Quantity');
 foreach($array_list as $value){
     if(!isset($$value)) {$$value = array();}
 }
@@ -70,14 +66,14 @@ foreach($array_list as $value){
 <?php
 
 //print "<pre>"; print_r($array); print "</pre>\r\n";
-
+echo "<div>";
     /*
      *  Display Strings
      */
     $list = array('EchoToken', 'UniqueID_ID', 'PackageRequest_ID', 'PackageRequest_TravelCode', 'Start', 'PaymentType', 'Quantity');
     foreach($list as $value){
         if(isset($array[$value])) {
-            echo "\t" . echoThis($value) . ": $array[$value] <br>\r\n";
+            echo "\t<span>" . echoThis($value) . ": $array[$value] </span><br>\r\n";
             echo "\t<input type='hidden' name='{$value}' value='{$array[$value]}' />\r\n";
         }
     }
@@ -99,8 +95,7 @@ foreach($array_list as $value){
         foreach($flight_list as $value) {
             echo "\t<span class='label3'>" . echoThis($value) . "[{$i}]: </span>";
             echo "\t<input type='hidden' name='{$value}[]' value='{$array[$value][$i]}' />\r\n\t";
-            print_r($array[$value][$i]);
-            echo "\t<br>\r\n ";
+            echo "<span>" . $array[$value][$i] . "</span><br>\r\n ";
         }
     }
 
@@ -110,16 +105,27 @@ foreach($array_list as $value){
 //what else can be in ContactDetail
 // for testing I am giving values, just make them blank when you go live
 
+echo "</div>";
 
     /*************************************************************
      *  here we input the Contact information, <ContactDetail>
      */
     $ContactDetail = array('PhoneNumber'=>$PhoneNumber, 'Address'=>$Address, 'Email'=>$Email);
-    echo "\r\n\t<br>\r\n\tContact Detail: <br>\r\n";
-    foreach($ContactDetail as $key => $value){
-        echo "\t<p><label class='label2' for='{$key}'>" . echoThis($key) . ": </label>";
-        echo "<input id='{$key}' type='text' name='{$key}' value='{$value}' /></p>\r\n";
+
+    echo "\r\n\t<p>Contact Detail: </p>\r\n";
+    foreach($ContactDetail as $key => $value) {
+        $count = count($value);
+        echo "<div id='{$key}'>";
+        for($i=0; $i<$count; $i++) {
+            $j = $i + 1;
+            echo "\t<p><label class='label2' for='{$key}{$i}'>" . echoThis($key) . " #{$j} : </label>";
+            echo "<input id='{$key}{$i}' type='text' name='{$key}[]' value='{$value[$i]}' /> ";
+            echo "<button class='del_up' type='button' name='ContactDetail'>x</button></p>\r\n";
+        }
+        echo "<button class='add_up' type='button' id='{$key}_add' name='{$key}_add' value='submit'>+</button> <span>Add " . echoThis($key) . "</span><br><br>\r\n";
+        echo "</div>";
     }
+
 // allow add another phone number or address or email
 
     /*************************************************************
@@ -159,20 +165,24 @@ $SpecialNeed = array( array( ['Code'=>'Weight', '_'=>98],           // customer 
                );
 */
         $j = 0;
+        echo "<span class='RPH'>";
         foreach($SpecialNeed[$i] as $element){
             echo "\t<p>\r\n";
             $SpecialNeed_list = array('Code', '_');
             foreach($SpecialNeed_list as $key => $target){
-                echo "\t\t<label class='label2' for='SpecialNeed{$i}{$j}{$target}'>Special Need: </label>";
+                echo "\t\t<label class='label2' for='SpecialNeed{$i}{$j}{$target}'>Special Need #" . ($j+1) . " : </label>";
                 echo "<input id='SpecialNeed{$i}{$j}{$target}'  type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
             }
+            echo "<button class='del_up' type='button' name='SpecialNeed' >x</button>\r\n";
             echo "\t</p>\r\n";
             $j++;
         }
+        echo "<button class='add_up' type='button' name='SpecialNeed_add'>+</button> <span>Add Special Need</span><br><br>\r\n";
+        echo "</span>";
 
     }
 
-    echo "<button class='blue_up' type='Submit'>Book</button>\r\n";
+    echo "<button class='blue_up' type='Submit' name='info' value='submit'>Book</button>\r\n";
     echo "</form>\r\n";
 ?>
     <script type="text/javascript" src="mysrc.js"></script>

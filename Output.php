@@ -3,15 +3,15 @@ Namespace Takeflite;
 
 class Output {
 
-    public function printList($response, $output_format=''){
+    public function printList($response, $output_format='', $parameters=''){
         if    ($output_format === "AllPackages"         ) { $msg = $this->printAllPkgs($response); }
         elseif($output_format === "PackagesSpecificDate") { $msg = $this->printPkgList($response); }
-        elseif($output_format === "OTA_PkgBookRQResult" ) { $msg = $this->OTA_PkgBookRQResult($response);}
+        elseif($output_format === "OTA_PkgBookRQResult" ) { $msg = $this->OTA_PkgBookRQResult($response,$parameters);}
         else { die("Problem selecting report"); }
         return $msg;
     }
 
-    private function OTA_PkgBookRQResult($response){
+    private function OTA_PkgBookRQResult($response, $parameters){
         $array = json_decode(json_encode($response->OTA_PkgBookRQResult), true);
         $msg  = "<div id='wrapper'>\r\n";
         $msg .= "<p>\r\n";
@@ -23,6 +23,15 @@ class Output {
         $msg .= "Version:     " . $array['Version']   . "<br />";
         $msg .= "</p>\r\n";
         $msg .= "<hr>";
+
+        if($parameters<>''){
+
+
+
+
+
+        }
+
         return $msg;
     }
 

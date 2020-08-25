@@ -174,12 +174,11 @@ class Request {
         }
 
         $PkgBookRQ = array();
-        if(isset($EchoToken))                 $PkgBookRQ['EchoToken']      = $EchoToken;
-        if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID'] = $UniqueID_ID;
-        if(isset($PackageRequest_ID))         $PackageRequest['ID'] = $PackageRequest_ID;
+        if(isset($EchoToken))                 $PkgBookRQ['EchoToken']       = $EchoToken;
+        if(isset($UniqueID_ID))               $PkgBookRQ['UniqueID']['ID']  = $UniqueID_ID;
+        if(isset($PackageRequest_ID))         $PackageRequest['ID']         = $PackageRequest_ID;
         if(isset($PackageRequest_TravelCode)) $PackageRequest['TravelCode'] = $PackageRequest_TravelCode;
         if(isset($Start))                     $PackageRequest['DateRange']['Start'] = $Start;
-
 
         $Flight_attributes = array('DepartureDateTime', 'ArrivalDateTime', 'TravelCode', 'Duration', 'CheckInDate');
         $l = count($DepartureDateTime); // if there is a Flight there must be a departure time?
@@ -188,26 +187,37 @@ class Request {
             $prefix = 'Flight_';
             foreach($Flight_attributes as $value){
                 if(($value === 'TravelCode') && isset(${$prefix . $value}[$i])) {
-                    $Flight[$value] = ${'Flight_' . $value}[$i];
+                    $Flight[$value] = ${$prefix . $value}[$i];
                 }
                 if(isset($$value)) {
                     $Flight[$value] = $$value[$i];
                 }
             }
-
             $Flight['DepartureAirport']['LocationCode'] = $DepartureAirport_LocationCode[$i];
             $Flight['ArrivalAirport']['LocationCode']   = $ArrivalAirport_LocationCode[$i];
             $Flight['OperatingAirline']['FlightNumber'] = $FlightNumber[$i];
 
-            $ItineraryItem[$i]['Flight'] = $Flight;
+            $ItineraryItems[$i]['ItineraryItem']['Flight'] = $Flight;
         }
-        if(isset($ItineraryItem))             $PackageRequest['ItineraryItems']['ItineraryItem'] = $ItineraryItem;
+        if(isset($ItineraryItems))             $PackageRequest['ItineraryItems'] = $ItineraryItems;
 
         if(isset($PackageRequest))            $PkgBookRQ['PackageRequest'] = $PackageRequest;
 
-        if(isset($PhoneNumber))               $PkgBookRQ['ContactDetail']['Telephone']['PhoneNumber'] = $PhoneNumber;
-        if(isset($Address))                   $PkgBookRQ['ContactDetail']['Address']['_'] = $Address;
-        if(isset($Email))                     $PkgBookRQ['ContactDetail']['Email']['_']   = $Email;
+        if(isset($PhoneNumber)){
+            foreach($PhoneNumber as $key => $num){
+                $PkgBookRQ['ContactDetail']['Telephone'][$key]['PhoneNumber'] = $PhoneNumber[$key];
+            }
+        }
+        if(isset($Email)) {
+            foreach($Email as $key => $num) {
+                $PkgBookRQ['ContactDetail']['Email'][$key]['_'] = $Email[$key];
+            }
+        }
+        if(isset($Address)) {
+            foreach($Address as $key => $num) {
+                $PkgBookRQ['ContactDetail']['Address'][$key]['_'] = $Address[$key];
+            }
+        }
 
         $k = 0;
         $l = count($RPH); // if there is a PassengerListItem tag there must be a passenger count (RPH)
@@ -230,11 +240,9 @@ class Request {
         }
 
         $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
-
+print "<pre>"; print_r($PkgBookRQ); print "</pre>";
+die();
         $parameters = array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials);
-        
-print "<pre>"; print_r($parameters);
-return "Exit ";
 
         try {
             $response = $client->OTA_PkgBookRQ($parameters);

@@ -92,10 +92,16 @@ namespace Takeflite {
 
     function dumpTimeStamps($time)
     {
-        $previous = array_kshift($time);
-        echo '<span class="label3">' . $loc . '</span>' . date(' Y-m-d H:m:s ', $stamp) . ($stamp - $previous) . '<br>';
+        $first = true;
+        $previous = 0;
         foreach ($time as $loc => $stamp) {
-            echo '<span class="label3">' . $loc . '</span>' . date(' Y-m-d H:m:s ', $stamp) . ($stamp - $previous) . '<br>';
+            if($first){
+                $first=false;
+                $diff = 0;
+            }else{
+                $diff = $stamp - $previous;
+            }
+            echo '<span class="label3">' . $loc . '</span>' . date(' Y-m-d H:m:s ', $stamp) . ($diff) . '<br>';
             $previous = $stamp;
         }
     }
