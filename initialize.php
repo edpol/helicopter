@@ -1,5 +1,8 @@
 <?php
 namespace Takeflite;
+if(!extension_loaded('soap')){
+    die('SOAP extension not found');
+}
 
 session_start();
 

@@ -1,7 +1,6 @@
 <?php
 namespace Takeflite;
 
-include('error_reporting.php');
 require_once('initialize.php');
 $_SESSION['time']['index_initialized'] = time();
 
