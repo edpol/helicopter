@@ -8,8 +8,6 @@ if(!isset($_POST['info']) || $_POST['info']!=='submit'){
     die('How did you get here?');
 }
 
-include('error_reporting.php');
-
 $api = $request = $output = '';
 require_once('initialize.php');
 $_SESSION['time']['book_initialized'] = time();
@@ -30,33 +28,38 @@ $client = $api->instantiateSoapClient('OTA_PkgBookRQ');
 <body>
 
 <?php
-
     $parameters = $_POST;
-
     try {
 
-
-echo "<pre>"; print_r($parameters); echo "</pre>";
-echo "<hr>";
-$response = $request->OTA_PkgBookRQ($client, $parameters);
+//echo "<pre style='color:darkseagreen;'>"; print_r($parameters); echo "</pre>";
+//echo "<hr>";
+        $response = $request->OTA_PkgBookRQ($client, $parameters);
         $_SESSION['time']['book_OTA_PkgBookRQ'] = time();
-
-
-
-
-
-
-
-
-
-        echo "<br><pre>";
-        print_r($response);
-
-        if(isset($response->Warnings))          { print_r($response->Warnings);          }    // WarningsType
-        if(isset($response->Success))           { print_r($response->Success);           }    // SuccessType
-        if(isset($response->Errors))            { print_r($response->Errors);            }    // ErrorsType
-        if(isset($response->TPA_Extensions))    { print_r($response->TPA_Extensions);    }    // TPA_ExtensionsType
-        if(isset($response->PackageReservation)){ print_r($response->PackageReservation);}    // PkgReservation
+/*
+if(is_bool($response)) {
+    echo "OTA_PkgBookRQ returned FALSE<br>";
+} else {
+    echo "<br><pre>Response: ";
+    print_r($response);
+    echo "</pre>";
+    if (isset($response->Warnings)) {
+        print_r($response->Warnings);
+    }    // WarningsType
+    if (isset($response->Success)) {
+        print_r($response->Success);
+    }    // SuccessType
+    if (isset($response->Errors)) {
+        print_r($response->Errors);
+    }    // ErrorsType
+    if (isset($response->TPA_Extensions)) {
+        print_r($response->TPA_Extensions);
+    }    // TPA_ExtensionsType
+    if (isset($response->PackageReservation)) {
+        print_r($response->PackageReservation);
+    }    // PkgReservation
+}
+echo $output->printList($response, 'OTA_PkgBookRQResult', $parameters);
+*/
 
         if(isset($response->OTA_PkgBookRQResult->Success)) {
             echo $output->printList($response, 'OTA_PkgBookRQResult', $parameters);

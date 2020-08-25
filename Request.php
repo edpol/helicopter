@@ -197,7 +197,7 @@ class Request {
             $Flight['ArrivalAirport']['LocationCode']   = $ArrivalAirport_LocationCode[$i];
             $Flight['OperatingAirline']['FlightNumber'] = $FlightNumber[$i];
 
-            $ItineraryItems[$i]['ItineraryItem']['Flight'] = $Flight;
+            $ItineraryItems['ItineraryItem'][$i]['Flight'] = $Flight;
         }
         if(isset($ItineraryItems))             $PackageRequest['ItineraryItems'] = $ItineraryItems;
 
@@ -240,8 +240,7 @@ class Request {
         }
 
         $PkgBookRQ['PaymentDetails']['PaymentDetail']['PaymentType'] = $PaymentType;
-print "<pre>"; print_r($PkgBookRQ); print "</pre>";
-die();
+//print "<pre style='color:yellow;'><u>this is the input to OTA_PkgBookRQ call</u>: "; print_r($PkgBookRQ); print "</pre>";
         $parameters = array('PkgBookRQ' => $PkgBookRQ, 'Credentials' => $this->Credentials);
 
         try {

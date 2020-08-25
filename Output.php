@@ -11,24 +11,48 @@ class Output {
         return $msg;
     }
 
-    private function OTA_PkgBookRQResult($response, $parameters){
-        $array = json_decode(json_encode($response->OTA_PkgBookRQResult), true);
-        $msg  = "<div id='wrapper'>\r\n";
-        $msg .= "<p>\r\n";
-        $msg .= "Type:        " . $array['PackageReservation']['UniqueID']['Type'] . "<br />";
-        $msg .= "ID:          " . $array['PackageReservation']['UniqueID']['ID']   . "<br />";
-        $msg .= "ID Context:  " . $array['PackageReservation']['UniqueID']['ID_Context'] . "<br />";
-        $msg .= "Token:       " . $array['EchoToken'] . "<br />";
-        $msg .= "TimeStamp:   " . $array['TimeStamp'] . "<br />";
-        $msg .= "Version:     " . $array['Version']   . "<br />";
-        $msg .= "</p>\r\n";
-        $msg .= "<hr>";
+    private function OTA_PkgBookRQResult($response, $parameters=''){
+        $msg = "<div id='wrapper'>\r\n";
+
+        if(!is_bool($response)) {
+            $array = json_decode(json_encode($response->OTA_PkgBookRQResult), true);
+            if(isset($array['PackageReservation'])) {
+                $msg .= "<p>\r\n";
+                $msg .= "Type:        " . $array['PackageReservation']['UniqueID']['Type'] . "<br />";
+                $msg .= "ID:          " . $array['PackageReservation']['UniqueID']['ID'] . "<br />";
+                $msg .= "ID Context:  " . $array['PackageReservation']['UniqueID']['ID_Context'] . "<br />";
+                $msg .= "Token:       " . $array['EchoToken'] . "<br />";
+                $msg .= "TimeStamp:   " . $array['TimeStamp'] . "<br />";
+                $msg .= "Version:     " . $array['Version'] . "<br />";
+                $msg .= "</p>\r\n";
+            }
+            $msg .= "<hr>";
+        }
 
         if($parameters<>''){
 
-
-
-
+            foreach($parameters as $key => $value){
+                if($key=='SpecialNeed'){
+                    foreach($value as $key2 => $value2){
+                        foreach($value2 as $key3 => $value3) {
+                            foreach($value3 as $key4 => $value4) {
+                                $msg .= "$value4 ";
+                            }
+                            $msg .= "<br>";
+                        }
+                    }
+                }elseif(is_array($value)){
+                    $cnt = count($value);
+                    $msg .= "$key : ";
+                    if($cnt>1) { echo "<br>"; }
+                    foreach($value as $key1 => $value1){
+                        if($cnt>1) { echo "&nbsp;&nbsp;&nbsp;&nbsp;"; }
+                        $msg .= (string) $value1 . "<br> ";
+                    }
+                }else{
+                    if ($key!='info') { $msg .= "$key: $value <br>"; }
+                }
+            }
 
         }
 
@@ -158,15 +182,16 @@ class Output {
     // this is for a simpleXML string
     public function dumpErrors($data)
     {
-        $msg = '';
+        $msg = "<p class='whiteBox'>";
         // ERROR: didn't like the data sent
         if (isset($data->Errors)) {
             $error_count = 1;
             foreach ($data->Errors as $Error) {
-                $msg .= "Error #" . $error_count++ . ": <br />\r\n";
+                $msg .= "<span style='color:salmon;'>Error #" . $error_count++ . ":</span> <br />\r\n";
                 $msg .= $this->dumpAttributes("&nbsp;&nbsp;", " = ", $data->Errors->Error, true);
             }
         }
+        $msg .= '</p><div style="clear: both;"></div>';
         return $msg;
     }
 

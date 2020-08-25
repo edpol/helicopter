@@ -62,11 +62,11 @@ function delElement(node) {
     node.parentNode.remove();
 }
 
-function appendLabel(target, count){
-
+function appendLabel(target, count, RPH){
+console.log(RPH);
     let label  = document.createElement('label');
     label.classList.add("label2");
-    label.setAttribute('for', target + count);
+    label.setAttribute('for', target + RPH + count);
     let text1  = document.createTextNode(splitWords(target) + ' #' + (count + 1) + ': ');
     label.appendChild(text1);
     return label;
@@ -80,19 +80,42 @@ console.log(node.parentNode);
     let count = parent.querySelectorAll("p").length;
     let p = document.createElement("p");
     parent.insertBefore(p, node);
-console.log("Hello 2");
 
-    let target = "SpecialNeedCode";
-console.log("Hello 3");
-console.log(target);
-    let label = appendLabel("SpecialNeedCode", count);
+    let RPH = document.querySelectorAll(".RPH").length;
+    RPH--;
+
+    let target = "SpecialNeed";
+    let label = appendLabel(target, count, RPH);
     p.appendChild(label);
 
     let input  = document.createElement('input');
-    input.setAttribute('id', target + count);
+    input.setAttribute('id', target + RPH + count);
     input.setAttribute('type', 'text');
-    input.setAttribute('name', target + '[]');
+    input.setAttribute('name', target + '[' + RPH +'][' + count + '][Code]');
     p.appendChild(input);
+
+    target = "SpecialNeed_";
+    label = appendLabel(target, count, RPH);
+    let text = document.createTextNode('\t\t');
+    p.appendChild(text);
+    p.appendChild(label);
+
+    input  = document.createElement('input');
+    input.setAttribute('id', target + RPH + count);
+    input.setAttribute('type', 'text');
+    input.setAttribute('name', 'SpecialNeed' + '[' + RPH +'][' + count + '][_]');
+    p.appendChild(input);
+
+    let button = document.createElement('button');
+    button.setAttribute('class', 'del_up');
+    button.setAttribute('type',  'button');
+    button.setAttribute('name',  'SpecialNeed' + RPH + count);
+    let blank = document.createTextNode(' ');
+    p.appendChild(blank);
+    text = document.createTextNode('x');
+    p.appendChild(button);
+    button.appendChild(text);
+    button.addEventListener("click", function(e){p.remove()}, false);
 }
 
 function addElement(node){
@@ -109,7 +132,7 @@ function addElement(node){
 
     parent.insertBefore(p, span);
 
-    let label = appendLabel(target, count);
+    let label = appendLabel(target, count, '');
     p.appendChild(label);
 
     let input  = document.createElement('input');

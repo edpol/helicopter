@@ -10,8 +10,6 @@ if(!isset($_POST['submit']) || $_POST['submit']!=='submit'){
     die('How did you get here?');
 }
 
-include('error_reporting.php');
-
 $api = $request = $output = "";
 require_once('initialize.php');
 $_SESSION['time']['list_initialized'] = time();

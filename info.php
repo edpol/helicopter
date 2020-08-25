@@ -7,7 +7,6 @@ namespace Takeflite;
  *  According to Tfilte, Helicopter Tours takes care of payment method, so we always set PaymentDetails = 34
  *  then we can call OTA_PkgBookRQ to book it, and save to a cookie
  */
-include('error_reporting.php');
 
 require_once('initialize.php');
 $_SESSION['time']['info_initialized'] = time();
@@ -118,7 +117,7 @@ echo "</div>";
         echo "<div id='{$key}'>";
         for($i=0; $i<$count; $i++) {
             $j = $i + 1;
-            echo "\t<p><label class='label2' for='{$key}{$i}'>" . echoThis($key) . " #{$j} : </label>";
+            echo "\t<p><label class='label2' for='{$key}{$i}'>" . echoThis($key) . " #{$j}: </label>";
             echo "<input id='{$key}{$i}' type='text' name='{$key}[]' value='{$value[$i]}' /> ";
             echo "<button class='del_up' type='button' name='ContactDetail'>x</button></p>\r\n";
         }
@@ -170,10 +169,10 @@ $SpecialNeed = array( array( ['Code'=>'Weight', '_'=>98],           // customer 
             echo "\t<p>\r\n";
             $SpecialNeed_list = array('Code', '_');
             foreach($SpecialNeed_list as $key => $target){
-                echo "\t\t<label class='label2' for='SpecialNeed{$i}{$j}{$target}'>Special Need #" . ($j+1) . " : </label>";
-                echo "<input id='SpecialNeed{$i}{$j}{$target}'  type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />\r\n";
+                echo "\t\t<label class='label2' for='SpecialNeed{$target}{$i}{$j}'>Special Need #" . ($j+1) . ": </label>";
+                echo "<input id='SpecialNeed{$target}{$i}{$j}'  type='text' name='SpecialNeed[$i][$j][$target]' value='{$SpecialNeed[$i][$j][$target]}' />";
             }
-            echo "<button class='del_up' type='button' name='SpecialNeed' >x</button>\r\n";
+            echo " <button class='del_up' type='button' name='SpecialNeed' >x</button>\r\n";
             echo "\t</p>\r\n";
             $j++;
         }

@@ -58,7 +58,7 @@ namespace Takeflite {
             if (isset($data['Errors'])) {
                 $error_count = 1;
                 foreach ($data['Errors'] as $Error) {
-                    $msg .= "Error #" . $error_count++ . ": <br />";
+                    $msg .= "<span style='color:red;'>Error #" . $error_count++ . ":</span> <br />";
                     foreach ($Error as $key => $detail) {
                         if (!empty($detail)) {
                             $msg .= "&nbsp;&nbsp; {$key} = {$detail} <br />";
@@ -94,6 +94,7 @@ namespace Takeflite {
     {
         $first = true;
         $previous = 0;
+        echo "<br><u>Timestamps</u><br>";
         foreach ($time as $loc => $stamp) {
             if($first){
                 $first=false;

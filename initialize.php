@@ -20,6 +20,9 @@ defined('TRACE')          ? null : define('TRACE', true);
 //defined('WSDL_ADDR')      ? null : define('WSDL_ADDR', 'https://apps6.tflite.com/PublicService/Ota.svc/mex?wsdl');
 //defined('TRACE')          ? null : define('TRACE', false);
 
+if(file_exists(LIB_PATH.DS.'error_reporting.php')) {
+    require_once(LIB_PATH.'error_reporting.php');
+}
 if(!file_exists(LIB_PATH.DS.'credentials.php')) {
     die(LIB_PATH.'credentials.php not found');
 }
